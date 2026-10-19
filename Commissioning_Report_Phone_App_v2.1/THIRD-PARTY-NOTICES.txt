@@ -1,0 +1,2 @@
+This application contains no third-party JavaScript libraries.
+The PDF generator in pdf-engine.js is purpose-built source code included with this application.

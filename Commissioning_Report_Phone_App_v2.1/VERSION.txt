@@ -1,0 +1,15 @@
+Commissioning Report Phone App
+Version: 2.1 - tested phone package
+Date: 19 October 2026
+
+Built from the working 2.0 phone rebuild and 1.3 editable-row Windows version.
+
+Phone features:
+- Installable home-screen app for Android and iPhone after HTTPS deployment.
+- Offline operation after the first successful load.
+- Camera or photo-library input with on-device compression.
+- PDF preview, download and system sharing to Outlook, Mail or Teams.
+- Editable job, notes, checklist and completion rows.
+- Draft and custom layout saved only on the device.
+- New report clears report data and photos but keeps the customised row template.
+- In-app Android and iPhone installation instructions.
