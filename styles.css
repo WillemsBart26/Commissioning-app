@@ -134,3 +134,6 @@ table.data td.num{text-align:right;font-variant-numeric:tabular-nums}
 table.data td:first-child{min-width:110px}table.data td{white-space:normal}#tReports td:first-child{white-space:nowrap}
 table.data select{padding:7px;font-size:14px;min-width:120px}
 @media(max-width:600px){.kpi b{font-size:22px}.hide-sm{display:none}}
+
+.gate-card label.check-row{flex-direction:row;align-items:center;gap:10px;color:var(--ink);font-weight:600;font-size:14px;cursor:pointer}
+.gate-card label.check-row input{width:22px;height:22px;margin:0;accent-color:var(--navy);flex:none}

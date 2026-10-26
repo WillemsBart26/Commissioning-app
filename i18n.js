@@ -253,6 +253,7 @@
     /* ---------- Login ---------- */
     authLogin: ['Sign in', 'Aanmelden', 'Connexion'],
     authLoginBtn: ['Sign in', 'Aanmelden', 'Se connecter'],
+    authRemember: ['Stay signed in on this device', 'Aangemeld blijven op dit toestel', 'Rester connecté sur cet appareil'],
     authRegister: ['Create account', 'Account aanmaken', 'Créer un compte'],
     authRegisterBtn: ['Create account', 'Account aanmaken', 'Créer le compte'],
     authEmail: ['Work e-mail', 'Werk-e-mail', 'E-mail professionnel'],

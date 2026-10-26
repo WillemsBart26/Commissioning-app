@@ -12,6 +12,16 @@
   const SKEY = 'edp-session', PKEY = 'edp-profile', QKEY = 'edp-sync-queue';
   const read = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const write = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  /* "Stay signed in": session kept in localStorage (survives closing the app) or sessionStorage (until the app is closed) */
+  const remember = () => { try { return localStorage.getItem('edp-remember') !== '0'; } catch (e) { return true; } };
+  const readSession = () => { try { return JSON.parse(localStorage.getItem(SKEY) || sessionStorage.getItem(SKEY)); } catch (e) { return null; } };
+  const writeSession = v => {
+    try {
+      localStorage.removeItem(SKEY); sessionStorage.removeItem(SKEY);
+      if (v != null) (remember() ? localStorage : sessionStorage).setItem(SKEY, JSON.stringify(v));
+    } catch (e) {}
+  };
+  const lastEmail = () => { try { return localStorage.getItem('edp-last-email') || ''; } catch (e) { return ''; } };
 
   async function call(path, { method = 'GET', body, token, headers = {} } = {}) {
     const res = await fetch(CONFIG.url + path, {
@@ -26,23 +36,27 @@
   }
   function storeSession(d) {
     if (!d || !d.access_token) return null;
-    const s = { access_token: d.access_token, refresh_token: d.refresh_token, expires_at: d.expires_at || Math.floor(Date.now() / 1000) + (Number(d.expires_in) || 3600), user: d.user || (read(SKEY) || {}).user };
-    write(SKEY, s); return s;
+    const s = { access_token: d.access_token, refresh_token: d.refresh_token, expires_at: d.expires_at || Math.floor(Date.now() / 1000) + (Number(d.expires_in) || 3600), user: d.user || (readSession() || {}).user };
+    writeSession(s); return s;
   }
   /* Returns a valid session; refreshes when expired. Offline: keeps the stored session so field work continues. */
   async function session() {
-    const s = read(SKEY); if (!s) return null;
+    const s = readSession(); if (!s) return null;
     if (s.expires_at - 60 > Date.now() / 1000) return s;
     if (!navigator.onLine) return s;
     try { return storeSession(await call('/auth/v1/token?grant_type=refresh_token', { method: 'POST', body: { refresh_token: s.refresh_token } })); }
-    catch (e) { if (e.status === 400 || e.status === 401) { write(SKEY, null); write(PKEY, null); return null; } return s; }
+    catch (e) { if (e.status === 400 || e.status === 401) { writeSession(null); write(PKEY, null); return null; } return s; }
   }
   const validDomain = email => String(email).trim().toLowerCase().endsWith(CONFIG.domain);
   const here = () => location.href.split('#')[0].split('?')[0];
 
   async function signIn(email, password) {
     const d = await call('/auth/v1/token?grant_type=password', { method: 'POST', body: { email: email.trim().toLowerCase(), password } });
-    storeSession(d); await profile(true); return d;
+    storeSession(d);
+    try { localStorage.setItem('edp-last-email', email.trim().toLowerCase()); } catch (e) {}
+    /* Ask the browser / phone to save the login (Chrome, Edge, Android; Safari and iPhone offer it themselves) */
+    if (global.PasswordCredential && navigator.credentials) { try { await navigator.credentials.store(new PasswordCredential({ id: email.trim().toLowerCase(), password })); } catch (e) {} }
+    await profile(true); return d;
   }
   async function signUp(email, password, fullName) {
     return call('/auth/v1/signup?redirect_to=' + encodeURIComponent(here()), { method: 'POST', body: { email: email.trim().toLowerCase(), password, data: { full_name: fullName.trim() } } });
@@ -50,9 +64,9 @@
   const recover = email => call('/auth/v1/recover?redirect_to=' + encodeURIComponent(here()), { method: 'POST', body: { email: email.trim().toLowerCase() } });
   async function setPassword(password) { const s = await session(); return call('/auth/v1/user', { method: 'PUT', token: s.access_token, body: { password } }); }
   async function signOut() {
-    const s = read(SKEY);
+    const s = readSession();
     if (s && navigator.onLine) { try { await call('/auth/v1/logout', { method: 'POST', token: s.access_token }); } catch (e) {} }
-    write(SKEY, null); write(PKEY, null);
+    writeSession(null); write(PKEY, null);
   }
   async function profile(force) {
     const cached = read(PKEY);
@@ -92,9 +106,11 @@
 
   /* ---------- Login screen ---------- */
   function gateHtml(mode) {
-    const f = (id, type, key, extra = '') => `<label>${t(key)}<input id="${id}" type="${type}" ${extra} required></label>`;
+    const names = { gEmail: 'email', gPass: 'password', gName: 'name' };
+    const f = (id, type, key, extra = '') => `<label>${t(key)}<input id="${id}" name="${names[id]}" type="${type}" ${extra} required></label>`;
     const forms = {
       login: `<h2>${t('authLogin')}</h2>${f('gEmail', 'email', 'authEmail', 'autocomplete="username" placeholder="naam' + CONFIG.domain + '"')}${f('gPass', 'password', 'authPassword', 'autocomplete="current-password"')}
+        <label class="check-row"><input type="checkbox" id="gRemember" ${remember() ? 'checked' : ''}><span>${t('authRemember')}</span></label>
         <button class="primary" type="submit">${t('authLoginBtn')}</button>
         <p class="gate-links"><a href="#" data-mode="register">${t('authNoAccount')}</a> · <a href="#" data-mode="forgot">${t('authForgot')}</a></p>`,
       register: `<h2>${t('authRegister')}</h2>${f('gName', 'text', 'authName', 'autocomplete="name"')}${f('gEmail', 'email', 'authEmail', 'autocomplete="username" placeholder="naam' + CONFIG.domain + '"')}${f('gPass', 'password', 'authPassword', 'autocomplete="new-password" minlength="8"')}
@@ -107,7 +123,7 @@
       newpass: `<h2>${t('authNewPassword')}</h2>${f('gPass', 'password', 'authPassword', 'autocomplete="new-password" minlength="8"')}
         <button class="primary" type="submit">${t('authSave')}</button>`
     };
-    return `<div class="gate-card"><img src="assets/edp-logo.jpg" alt="EDP" class="gate-logo"><div class="lang-switch gate-lang"></div><form id="gateForm" novalidate>${forms[mode]}<p id="gateMsg" class="gate-msg" role="alert"></p></form></div>`;
+    return `<div class="gate-card"><img src="assets/edp-logo.jpg" alt="EDP" class="gate-logo"><div class="lang-switch gate-lang"></div><form id="gateForm" method="post" action="#" novalidate>${forms[mode]}<p id="gateMsg" class="gate-msg" role="alert"></p></form></div>`;
   }
   function errText(e) {
     const m = String(e && e.message || e);
@@ -130,13 +146,14 @@
     el.querySelectorAll('[data-mode]').forEach(a => a.onclick = ev => { ev.preventDefault(); showGate(a.dataset.mode, resolve); });
     const msg = (s, ok) => { const m = el.querySelector('#gateMsg'); m.textContent = s; m.classList.toggle('ok', !!ok); };
     const v = id => (el.querySelector('#' + id) || {}).value || '';
-    if (opts.email && el.querySelector('#gEmail')) el.querySelector('#gEmail').value = opts.email;
+    const em = el.querySelector('#gEmail');
+    if (em) { em.value = opts.email || (mode === 'login' ? lastEmail() : ''); if (mode === 'login' && em.value && !opts.msgKey) { const pw = el.querySelector('#gPass'); if (pw) setTimeout(() => pw.focus(), 50); } }
     if (opts.msgKey) { msg(t(opts.msgKey), true); if (mode === 'login') { const pw = el.querySelector('#gPass'); if (pw) pw.focus(); } }
     el.querySelector('#gateForm').onsubmit = async ev => {
       ev.preventDefault();
       const btn = el.querySelector('button[type=submit]'); btn.disabled = true;
       try {
-        if (mode === 'login') { await signIn(v('gEmail'), v('gPass')); hideGate(); resolve(await profile()); }
+        if (mode === 'login') { try { localStorage.setItem('edp-remember', el.querySelector('#gRemember').checked ? '1' : '0'); } catch (x) {} await signIn(v('gEmail'), v('gPass')); hideGate(); resolve(await profile()); }
         else if (mode === 'register') {
           if (!v('gName').trim()) throw new Error(t('authErrName'));
           if (!validDomain(v('gEmail'))) throw new Error(t('authDomainHint', { d: CONFIG.domain }));
@@ -162,7 +179,7 @@
     storeSession({ access_token: p.get('access_token'), refresh_token: p.get('refresh_token'), expires_in: p.get('expires_in'), expires_at: Number(p.get('expires_at')) || undefined, user: null });
     return { type: p.get('type') };
   }
-  async function fetchUser() { const s = read(SKEY); if (s && !s.user) { try { s.user = await call('/auth/v1/user', { token: s.access_token }); write(SKEY, s); } catch (e) {} } }
+  async function fetchUser() { const s = readSession(); if (s && !s.user) { try { s.user = await call('/auth/v1/user', { token: s.access_token }); writeSession(s); } catch (e) {} } }
 
   /* Call once per page: resolves with the profile when signed in (shows the login screen otherwise). */
   function require() {
