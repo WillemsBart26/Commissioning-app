@@ -193,8 +193,11 @@
     const y = new Date().getFullYear(), target = EDPAuth.CONFIG.target;
     let n = null;
     try {
-      const rows = await EDPAuth.rest(`reports?select=id&module=eq.safety&user_id=eq.${me.id}&report_date=gte.${y}-01-01&report_date=lte.${y}-12-31`);
-      n = rows.length; try { localStorage.setItem('edp-vca-count', JSON.stringify({ y, n })); } catch (e) {}
+      const [rows, man] = await Promise.all([
+        EDPAuth.rest(`reports?select=id&module=eq.safety&user_id=eq.${me.id}&report_date=gte.${y}-01-01&report_date=lte.${y}-12-31`),
+        EDPAuth.rest(`vca_manual_counts?select=count&user_id=eq.${me.id}&year=eq.${y}`).catch(() => [])
+      ]);
+      n = rows.length + ((man[0] || {}).count || 0); try { localStorage.setItem('edp-vca-count', JSON.stringify({ y, n })); } catch (e) {}
     } catch (e) { try { const c = JSON.parse(localStorage.getItem('edp-vca-count')); if (c && c.y === y) n = c.n; } catch (x) {} }
     const pend = EDPAuth.pending(), total = (n || 0) + pend, pct = Math.min(100, Math.round(total / target * 100));
     card.innerHTML = `<div class="user-row"><span>${esc(t('signedInAs', { n: me.full_name || me.email }))}</span><button type="button" class="secondary compact" id="signOutBtn">${esc(t('signOut'))}</button></div>

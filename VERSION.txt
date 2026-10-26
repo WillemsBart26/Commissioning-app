@@ -1,5 +1,5 @@
 EDP Reports
-Version 4.1 - 26 October 2026
-Modules: Commissioning Report, Site Safety Inspection, SPAQUE Inspection Report, VCA overview
+Version 4.3 - 26 October 2026
+Modules: Commissioning Report, Site Safety Inspection, SPAQUE Inspection Report, VCA overview, Settings
 Languages: English, Nederlands, Français
 Login: @edp.com work e-mail (Supabase)

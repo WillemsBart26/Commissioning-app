@@ -323,6 +323,15 @@
     role_worker: ['Employee', 'Medewerker', 'Collaborateur'],
     role_supervisor: ['Supervisor (reads VCA)', 'Leidinggevende (leest VCA)', 'Responsable (lit le VCA)'],
     role_admin: ['Administrator', 'Beheerder', 'Administrateur'],
+    /* ---------- Manual VCA counts ---------- */
+    manCol: ['Outside app', 'Buiten app', 'Hors app'],
+    manViaApp: ['Via app', 'Via app', 'Via l’app'],
+    manSplit: ['{a} via app + {m} outside app', '{a} via app + {m} buiten app', '{a} via l’app + {m} hors app'],
+    manHint: ['“Outside app” = inspections done before or without the app, entered by the administrator.', '“Buiten app” = inspecties gedaan vóór of zonder de app, ingevuld door de beheerder.', '« Hors app » = inspections réalisées avant ou sans l’app, saisies par l’administrateur.'],
+    manHintAdmin: ['Type in “Outside app” how many inspections someone already did this year without the app (e.g. on paper). It is saved immediately and counts towards the 12.', 'Vul bij “Buiten app” in hoeveel inspecties iemand dit jaar al zonder de app deed (bv. op papier). Het wordt meteen opgeslagen en telt mee voor de 12.', 'Indiquez dans « Hors app » combien d’inspections une personne a déjà faites cette année sans l’app (p. ex. sur papier). C’est enregistré immédiatement et compte pour les 12.'],
+    manHintProject: ['Filtered on one project: only inspections made with the app are shown (outside-app numbers are not linked to a project).', 'Gefilterd op één project: alleen inspecties via de app worden getoond (aantallen buiten de app zijn niet aan een project gekoppeld).', 'Filtré sur un projet : seules les inspections via l’app sont affichées (les chiffres hors app ne sont pas liés à un projet).'],
+    manSaved: ['Saved', 'Opgeslagen', 'Enregistré'],
+    manInvalid: ['Enter a number between 0 and 365.', 'Vul een getal in tussen 0 en 365.', 'Saisissez un nombre entre 0 et 365.'],
     /* ---------- Settings ---------- */
     setTile: ['Settings', 'Instellingen', 'Paramètres'],
     setTileSub: ['Who may read the VCA overview (administrator)', 'Wie het VCA-overzicht mag lezen (beheerder)', 'Qui peut consulter le suivi VCA (administrateur)'],

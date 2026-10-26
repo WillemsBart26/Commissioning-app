@@ -1,4 +1,4 @@
-# EDP Reports v4.1
+# EDP Reports v4.3
 
 Installable, offline-first web app (PWA) for field reports, in **English, Nederlands and Français**:
 
@@ -15,8 +15,9 @@ The app opens in the phone's language (NL / FR / EN, otherwise English). Switch 
 - Everyone signs in with their **@edp.com** work e-mail (create account → confirm via e-mail → sign in). Other domains are refused by the database.
 - **Project is mandatory** in all three reports before a PDF can be made.
 - Every **Site Safety Inspection** PDF is registered (who, project, location, date, OK/NOK/N/A counts – no photos). Re-sending the same report does not count twice. Offline, it is queued and sent automatically when back online.
+- Inspections done **outside the app** (e.g. on paper, before the app existed) can be entered per person and per year by the administrator in the VCA overview (column "Outside app"); they count towards the 12.
 - Home screen shows each person's own progress towards **12 inspections per year (VCA)**.
-- `dashboard.html` (VCA overview) is only visible to **supervisors** and the **administrator**: per person (on track / behind / reached), per project, all inspections, CSV export. The administrator assigns roles there.
+- `dashboard.html` (VCA overview) is only visible to **supervisors** and the **administrator**: per person (on track / behind / reached), per project, all inspections, CSV export. Roles are managed by the administrator in `settings.html` (Settings), incl. giving rights in advance to people without an account.
 - Backend: Supabase project "EDP Reports" (EU). The publishable key in `auth.js` is meant to be public; access is enforced by row-level security.
 
 ## Files
@@ -27,6 +28,7 @@ The app opens in the phone's language (NL / FR / EN, otherwise English). Switch 
 | `i18n.js` | All texts in EN / NL / FR |
 | `auth.js` | Login, roles, report registration with offline queue |
 | `dashboard.html`, `dashboard.js` | VCA overview for supervisors |
+| `settings.html`, `settings.js` | Roles and rights (administrator) |
 | `common.js` | Shared helpers: photo compression, saving, PDF header/footer, sharing |
 | `pdf-engine.js` | Offline PDF writer |
 | `styles.css` | EDP styling for all modules |

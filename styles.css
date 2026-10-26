@@ -148,3 +148,8 @@ table.data select{padding:7px;font-size:14px;min-width:120px}
 .btnlink{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
 @media(max-width:600px){.invite-form{grid-template-columns:1fr}.user-item .what{align-items:stretch;flex-basis:100%}.user-item .what select{min-width:0}}
 .user-item .what .pill{align-self:flex-end}@media(max-width:600px){.user-item .what .pill{align-self:flex-start}}
+
+/* Manual VCA counts */
+td.man{width:90px}
+.man-input{width:78px;padding:8px;text-align:center;font-weight:800;font-size:16px}
+.prog small{display:block;margin-top:4px;font-size:12px}
