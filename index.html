@@ -1,5 +1,74 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b3142"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Enerdeal Reports"><title>Enerdeal Reports</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon-192.png"><link rel="apple-touch-icon" href="assets/icon-192.png"><link rel="stylesheet" href="styles.css"></head><body>
-<header><button id="backBtn" class="icon hidden">←</button><img src="assets/icon-192.png"><div><strong id="appTitle">Enerdeal Reports</strong><small id="saveStatus">Ready</small></div><button id="installBtn" class="icon">↓</button></header>
-<main><section id="home"><div class="hero"><p class="eyebrow">FIELD REPORTS</p><h1>Enerdeal Reports</h1><p>Choose a report, complete it on site and share a finished PDF.</p></div><div class="tiles"><button data-open="commissioning"><b>🔧</b><span><strong>Commissioning Report</strong><small>Checks, measurements, photos and sign-off</small></span></button><button data-open="safety"><b>🦺</b><span><strong>Site Safety Inspection</strong><small>OK / NOK / N/A, actions and photos per question</small></span></button><button type="button" onclick="location.href='spaque.html'"><b>📋</b><span><strong>SPAQUE Inspection Report</strong><small>Onderdelen, checklist, foto-overzicht en PDF</small></span></button></div></section>
-<section id="report" class="hidden"><div class="report-head"><div><p class="eyebrow" id="moduleEyebrow"></p><h1 id="moduleTitle"></h1></div><button id="editBtn" class="secondary compact">✎ Edit checklist</button></div><section class="card"><h2>Report details</h2><div id="detailFields" class="grid"></div></section><section class="card"><h2 id="checkTitle">Checklist</h2><p class="muted">Photos are optional and stay linked to the relevant question.</p><div id="questionList"></div><button id="addQuestionBtn" class="secondary full hidden">+ Add checklist question</button></section><section class="card"><h2>General notes</h2><textarea id="generalNotes" rows="5" placeholder="General remarks, actions or outstanding points"></textarea><label class="photoAdd">＋ Add general photos<input id="generalPhotos" type="file" accept="image/*" capture="environment" multiple></label><div id="generalPhotoGrid" class="photos"></div></section><section class="card"><h2>Completion</h2><div id="completionFields" class="grid"></div></section><div class="privacy"><strong>Private by design</strong><span>Drafts and compressed photos stay on this device.</span></div></section></main>
-<div id="actions" class="actions hidden"><button id="newBtn" class="secondary">New</button><button id="downloadBtn" class="secondary">Download PDF</button><button id="shareBtn" class="primary">Send PDF ↗</button></div><div id="toast"></div><script src="pdf-engine.js"></script><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#272e3b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EDP Reports">
+<title>EDP Reports</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="app">
+  <button id="backBtn" class="icon hidden" data-i18n-title="back">←</button>
+  <img class="logo" src="assets/edp-logo.jpg" alt="EDP">
+  <div class="titles"><strong id="appTitle" data-i18n="appName">EDP Reports</strong><small id="saveStatus" data-i18n="ready">Ready</small></div>
+  <div id="langSwitch" class="lang-switch"></div>
+  <button id="installBtn" class="icon" data-i18n-title="install">↓</button>
+</header>
+
+<main>
+  <section id="home">
+    <div class="hero">
+      <p class="eyebrow" data-i18n="eyebrowHome">FIELD REPORTS</p>
+      <h1 data-i18n="appName">EDP Reports</h1>
+      <p data-i18n="homeIntro">Choose a report, complete it on site and share a finished PDF.</p>
+    </div>
+    <div class="tiles">
+      <button data-open="commissioning"><b>🔧</b><span><strong data-i18n="tileCommTitle">Commissioning Report</strong><small data-i18n="tileCommSub"></small></span></button>
+      <button data-open="safety"><b>🦺</b><span><strong data-i18n="tileSafetyTitle">Site Safety Inspection</strong><small data-i18n="tileSafetySub"></small></span></button>
+      <a href="spaque.html"><b>📋</b><span><strong data-i18n="tileSpaqueTitle">SPAQUE Inspection Report</strong><small data-i18n="tileSpaqueSub"></small></span></a>
+    </div>
+    <p class="footer">EDP Reports v4.0</p>
+  </section>
+
+  <section id="report" class="hidden">
+    <div class="report-head">
+      <div><p class="eyebrow" id="moduleEyebrow"></p><h1 id="moduleTitle"></h1></div>
+      <button id="editBtn" class="secondary compact" data-i18n="editChecklist">✎ Edit checklist</button>
+    </div>
+    <section class="card"><h2 data-i18n="reportDetails">Report details</h2><div id="detailFields" class="grid"></div></section>
+    <section class="card">
+      <h2 data-i18n="checklist">Checklist</h2>
+      <p class="muted" data-i18n="photosOptional"></p>
+      <div id="questionList"></div>
+      <button id="addQuestionBtn" class="secondary full hidden" data-i18n="addQuestion">+ Add checklist question</button>
+    </section>
+    <section class="card">
+      <h2 data-i18n="generalNotes">General notes</h2>
+      <textarea id="generalNotes" rows="5" data-i18n-ph="generalNotesPh"></textarea>
+      <label class="photoAdd"><span data-i18n="addGeneralPhotos">＋ Add general photos</span><input id="generalPhotos" type="file" accept="image/*" multiple></label>
+      <div id="generalPhotoGrid" class="photos"></div>
+    </section>
+    <section class="card"><h2 data-i18n="completion">Completion</h2><div id="completionFields" class="grid"></div></section>
+    <div class="privacy"><strong data-i18n="privacyTitle">Private by design</strong><span data-i18n="privacyText"></span></div>
+  </section>
+</main>
+
+<div id="actions" class="actions hidden">
+  <button id="newBtn" class="secondary" data-i18n="newReport">New</button>
+  <button id="downloadBtn" class="secondary" data-i18n="downloadPdf">Download PDF</button>
+  <button id="shareBtn" class="primary" data-i18n="sendPdf">Send PDF ↗</button>
+</div>
+<div id="toast"></div>
+<script src="i18n.js"></script>
+<script src="common.js"></script>
+<script src="pdf-engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

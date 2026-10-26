@@ -1,0 +1,297 @@
+/* EDP Reports - translations (EN / NL / FR). Each entry: [English, Nederlands, Français] */
+(function (global) {
+  'use strict';
+  const LANGS = ['en', 'nl', 'fr'];
+  const D = {
+    /* ---------- General UI ---------- */
+    appName: ['EDP Reports', 'EDP Reports', 'EDP Reports'],
+    eyebrowHome: ['FIELD REPORTS', 'WERFRAPPORTEN', 'RAPPORTS DE CHANTIER'],
+    homeIntro: ['Choose a report, complete it on site and share a finished PDF.', 'Kies een rapport, vul het in op de werf en deel een afgewerkte PDF.', 'Choisissez un rapport, complétez-le sur chantier et partagez un PDF finalisé.'],
+    tileCommTitle: ['Commissioning Report', 'Commissioning-rapport', 'Rapport de mise en service'],
+    tileCommSub: ['Checks, measurements, photos and sign-off', 'Controles, metingen, foto’s en ondertekening', 'Contrôles, mesures, photos et signature'],
+    tileSafetyTitle: ['Site Safety Inspection', 'Veiligheidsinspectie werf', 'Inspection sécurité chantier'],
+    tileSafetySub: ['OK / NOK / N/A, actions and photos per question', 'OK / NOK / N.v.t., acties en foto’s per vraag', 'OK / NOK / N/A, actions et photos par question'],
+    tileSpaqueTitle: ['SPAQUE Inspection Report', 'SPAQUE-inspectierapport', 'Rapport d’inspection SPAQUE'],
+    tileSpaqueSub: ['Parts, checklist, photo overview and PDF', 'Onderdelen, checklist, foto-overzicht en PDF', 'Composants, check-list, aperçu photos et PDF'],
+    ready: ['Ready', 'Klaar', 'Prêt'],
+    saved: ['Saved on this device', 'Opgeslagen op dit toestel', 'Enregistré sur cet appareil'],
+    storageFull: ['Storage full – not saved! Remove photos or start a new report.', 'Geheugen vol – niet opgeslagen! Verwijder foto’s of start een nieuw rapport.', 'Mémoire pleine – non enregistré ! Supprimez des photos ou démarrez un nouveau rapport.'],
+    back: ['Back', 'Terug', 'Retour'],
+    install: ['Install app', 'App installeren', 'Installer l’app'],
+    installHelp: ['Use your browser menu: “Install app” or “Add to Home Screen”.', 'Gebruik het menu van je browser: “App installeren” of “Toevoegen aan startscherm”.', 'Utilisez le menu du navigateur : « Installer l’application » ou « Ajouter à l’écran d’accueil ».'],
+    editChecklist: ['✎ Edit checklist', '✎ Checklist bewerken', '✎ Modifier la check-list'],
+    done: ['✓ Done', '✓ Klaar', '✓ Terminé'],
+    reportDetails: ['Report details', 'Rapportgegevens', 'Détails du rapport'],
+    checklist: ['Checklist', 'Checklist', 'Check-list'],
+    photosOptional: ['Photos are optional and stay linked to the relevant question.', 'Foto’s zijn optioneel en blijven gekoppeld aan de betreffende vraag.', 'Les photos sont facultatives et restent liées à la question concernée.'],
+    addQuestion: ['+ Add checklist question', '+ Vraag toevoegen', '+ Ajouter une question'],
+    generalNotes: ['General notes', 'Algemene opmerkingen', 'Remarques générales'],
+    generalNotesPh: ['General remarks, actions or outstanding points', 'Algemene opmerkingen, acties of openstaande punten', 'Remarques générales, actions ou points ouverts'],
+    addGeneralPhotos: ['＋ Add general photos', '＋ Algemene foto’s toevoegen', '＋ Ajouter des photos générales'],
+    completion: ['Completion', 'Afronding', 'Clôture'],
+    privacyTitle: ['Private by design', 'Privé', 'Confidentiel'],
+    privacyText: ['Drafts and compressed photos stay on this device.', 'Concepten en verkleinde foto’s blijven op dit toestel.', 'Les brouillons et photos compressées restent sur cet appareil.'],
+    newReport: ['New', 'Nieuw', 'Nouveau'],
+    downloadPdf: ['Download PDF', 'PDF downloaden', 'Télécharger PDF'],
+    sendPdf: ['Send PDF ↗', 'PDF versturen ↗', 'Envoyer PDF ↗'],
+    remarkPh: ['Remarks / action required', 'Opmerking / vereiste actie', 'Remarque / action requise'],
+    addPhoto: ['＋ Add photo', '＋ Foto toevoegen', '＋ Ajouter une photo'],
+    caption: ['Caption', 'Bijschrift', 'Légende'],
+    photoAdded: ['Photo added', 'Foto toegevoegd', 'Photo ajoutée'],
+    photosAdded: ['{n} photos added', '{n} foto’s toegevoegd', '{n} photos ajoutées'],
+    photoFailed: ['This photo could not be read', 'Deze foto kon niet gelezen worden', 'Cette photo n’a pas pu être lue'],
+    questionName: ['Question name:', 'Naam van de vraag:', 'Intitulé de la question :'],
+    newQuestion: ['New checklist question', 'Nieuwe vraag', 'Nouvelle question'],
+    deleteQuestion: ['Delete this checklist question?', 'Deze vraag verwijderen?', 'Supprimer cette question ?'],
+    confirmNew: ['Start a new report? Your checklist template will be kept.', 'Nieuw rapport starten? Je checklist-sjabloon blijft bewaard.', 'Démarrer un nouveau rapport ? Votre modèle de check-list est conservé.'],
+    sharingCancelled: ['Sharing cancelled', 'Delen geannuleerd', 'Partage annulé'],
+    pdfFailed: ['PDF could not be created', 'PDF kon niet gemaakt worden', 'Le PDF n’a pas pu être créé'],
+    customQuestions: ['Custom questions', 'Eigen vragen', 'Questions personnalisées'],
+    notChecked: ['Not checked', 'Niet gecontroleerd', 'Non contrôlé'],
+    remarkAction: ['Remark / action', 'Opmerking / actie', 'Remarque / action'],
+    photo: ['Photo', 'Foto', 'Photo'],
+    page: ['Page {i} of {n}', 'Pagina {i} van {n}', 'Page {i} sur {n}'],
+    removePhoto: ['Remove photo', 'Foto verwijderen', 'Supprimer la photo'],
+    rename: ['Rename', 'Naam wijzigen', 'Renommer'],
+    togglePhotos: ['Photos on/off', 'Foto’s aan/uit', 'Photos oui/non'],
+    del: ['Delete', 'Verwijderen', 'Supprimer'],
+    resetText: ['Reset text to default', 'Standaardtekst terugzetten', 'Rétablir le texte par défaut'],
+
+    /* Status values */
+    st_Pass: ['Pass', 'In orde', 'Conforme'],
+    st_Fail: ['Fail', 'Niet in orde', 'Non conforme'],
+    st_OK: ['OK', 'OK', 'OK'],
+    st_NOK: ['NOK', 'NOK', 'NOK'],
+    'st_N/A': ['N/A', 'N.v.t.', 'N/A'],
+    fs_Passed: ['Passed', 'Goedgekeurd', 'Accepté'],
+    'fs_Passed with remarks': ['Passed with remarks', 'Goedgekeurd met opmerkingen', 'Accepté avec remarques'],
+    fs_Failed: ['Failed', 'Afgekeurd', 'Refusé'],
+    choose: ['— choose —', '— kies —', '— choisir —'],
+
+    /* ---------- Commissioning ---------- */
+    commEyebrow: ['COMMISSIONING', 'INDIENSTSTELLING', 'MISE EN SERVICE'],
+    commSection: ['Commissioning checklist', 'Checklist indienststelling', 'Check-list de mise en service'],
+    f_company: ['Company', 'Bedrijf', 'Société'],
+    f_reportNo: ['Report number', 'Rapportnummer', 'Numéro de rapport'],
+    f_client: ['Client / customer', 'Klant', 'Client'],
+    f_commDate: ['Commissioning date', 'Datum indienststelling', 'Date de mise en service'],
+    f_site: ['Site name', 'Naam site', 'Nom du site'],
+    f_technician: ['Technician', 'Technieker', 'Technicien'],
+    f_address: ['Site address', 'Adres site', 'Adresse du site'],
+    f_equipment: ['Equipment / model', 'Toestel / model', 'Équipement / modèle'],
+    f_finalStatus: ['Final status', 'Eindstatus', 'Statut final'],
+    f_signoff: ['Technician sign-off', 'Handtekening technieker', 'Signature technicien'],
+    f_clientSignoff: ['Client sign-off', 'Handtekening klant', 'Signature client'],
+    cq1: ['Visual condition and installation', 'Visuele staat en installatie', 'État visuel et installation'],
+    cq2: ['Protective earth / bonding', 'Aarding / equipotentiaalverbinding', 'Mise à la terre / liaison équipotentielle'],
+    cq3: ['Cable terminations and torque', 'Kabelaansluitingen en aanhaalmoment', 'Raccordements des câbles et couple de serrage'],
+    cq4: ['Cable labels and identification', 'Kabellabels en identificatie', 'Étiquetage et identification des câbles'],
+    cq5: ['Fuses, breakers and protection settings', 'Zekeringen, automaten en beveiligingsinstellingen', 'Fusibles, disjoncteurs et réglages de protection'],
+    cq6: ['Emergency stop / isolation', 'Noodstop / scheiding', 'Arrêt d’urgence / sectionnement'],
+    cq7: ['Firmware and parameter settings', 'Firmware en parameterinstellingen', 'Firmware et paramétrage'],
+    cq8: ['Functional operation', 'Functionele werking', 'Fonctionnement'],
+    cq9: ['Alarms and communications', 'Alarmen en communicatie', 'Alarmes et communication'],
+    cq10: ['Drawings and documentation updated', 'Tekeningen en documentatie bijgewerkt', 'Plans et documentation mis à jour'],
+
+    /* ---------- Site Safety ---------- */
+    safetyEyebrow: ['SITE SAFETY', 'VEILIGHEID WERF', 'SÉCURITÉ CHANTIER'],
+    f_project: ['Project', 'Project', 'Projet'],
+    f_date: ['Date', 'Datum', 'Date'],
+    f_location: ['Location', 'Locatie', 'Lieu'],
+    f_inspector: ['Inspection done by', 'Inspectie uitgevoerd door', 'Inspection réalisée par'],
+    f_positive: ['Positive remarks', 'Positieve opmerkingen', 'Points positifs'],
+    f_actions: ['General action points', 'Algemene actiepunten', 'Actions générales'],
+    f_inspSignoff: ['Inspector sign-off', 'Handtekening inspecteur', 'Signature inspecteur'],
+    ss1: ['1. Organization & Access', '1. Organisatie & toegang', '1. Organisation & accès'],
+    ss2: ['2. Personal Protective Equipment (PPE)', '2. Persoonlijke beschermingsmiddelen (PBM)', '2. Équipements de protection individuelle (EPI)'],
+    ss3: ['3. Health & Safety', '3. Gezondheid & veiligheid', '3. Santé & sécurité'],
+    ss4: ['4. Work Equipment and Machinery', '4. Arbeidsmiddelen en machines', '4. Équipements de travail et machines'],
+    ss5: ['5. Fall Protection / Working at Heights', '5. Valbeveiliging / werken op hoogte', '5. Protection antichute / travail en hauteur'],
+    ss6: ['6. Environment (SHE)', '6. Milieu (VGM)', '6. Environnement (SSE)'],
+    ss7: ['7. Behavior & Reporting Culture', '7. Gedrag & meldcultuur', '7. Comportement & culture de signalement'],
+    sq1_1: ['Site is correctly demarcated? (fences, signage)', 'Is de werf correct afgebakend? (hekken, signalisatie)', 'Le chantier est-il correctement délimité ? (clôtures, signalisation)'],
+    sq1_2: ['Site access controlled? (access control, visitor log)', 'Is de toegang gecontroleerd? (toegangscontrole, bezoekersregister)', 'L’accès est-il contrôlé ? (contrôle d’accès, registre des visiteurs)'],
+    sq1_3: ['Valid safety certificates and ID are present?', 'Zijn geldige veiligheidsattesten en ID aanwezig?', 'Les certificats de sécurité et pièces d’identité valides sont-ils présents ?'],
+    sq1_4: ['Toolbox meeting or site introduction conducted?', 'Is er een toolbox of werfonthaal gehouden?', 'Un toolbox meeting ou un accueil chantier a-t-il eu lieu ?'],
+    sq2_1: ['Does everyone on-site wear safety shoes?', 'Draagt iedereen op de werf veiligheidsschoenen?', 'Tout le monde porte-t-il des chaussures de sécurité ?'],
+    sq2_2: ['Does everyone on-site wear a safety helmet?', 'Draagt iedereen op de werf een veiligheidshelm?', 'Tout le monde porte-t-il un casque de sécurité ?'],
+    sq2_3: ['Does everyone on-site wear safety glasses?', 'Draagt iedereen op de werf een veiligheidsbril?', 'Tout le monde porte-t-il des lunettes de sécurité ?'],
+    sq2_4: ['Does everyone on-site wear high-visibility clothing?', 'Draagt iedereen op de werf signalisatiekledij?', 'Tout le monde porte-t-il des vêtements haute visibilité ?'],
+    sq3_1: ['First-aid kit available and complete?', 'Is de EHBO-kit aanwezig en volledig?', 'La trousse de premiers secours est-elle disponible et complète ?'],
+    sq3_2: ['Emergency number posters are visible?', 'Zijn de affiches met noodnummers zichtbaar?', 'Les affiches des numéros d’urgence sont-elles visibles ?'],
+    sq3_3: ['Fire extinguishers available and certified?', 'Zijn brandblussers aanwezig en gekeurd?', 'Les extincteurs sont-ils disponibles et contrôlés ?'],
+    sq3_4: ['Sanitary facilities are present and clean?', 'Zijn sanitaire voorzieningen aanwezig en proper?', 'Les installations sanitaires sont-elles présentes et propres ?'],
+    sq3_5: ['Order and cleanliness on the site?', 'Orde en netheid op de werf?', 'Ordre et propreté sur le chantier ?'],
+    sq4_1: ['Equipment is in good condition and certified?', 'Is het materieel in goede staat en gekeurd?', 'Le matériel est-il en bon état et contrôlé ?'],
+    sq4_2: ['Are all users trained and authorized?', 'Zijn alle gebruikers opgeleid en bevoegd?', 'Tous les utilisateurs sont-ils formés et habilités ?'],
+    sq4_3: ['Safe use is monitored?', 'Wordt toegezien op veilig gebruik?', 'L’utilisation sûre est-elle surveillée ?'],
+    sq5_1: ['Scaffolding is certified and has a tag?', 'Is de stelling gekeurd en voorzien van een label?', 'L’échafaudage est-il réceptionné et étiqueté ?'],
+    sq5_2: ['Edge protection / guardrails are present?', 'Is er randbeveiliging / leuning aanwezig?', 'Des protections de rive / garde-corps sont-ils présents ?'],
+    sq5_3: ['Harness and anchorage are used correctly?', 'Worden harnas en ankerpunten correct gebruikt?', 'Le harnais et les points d’ancrage sont-ils utilisés correctement ?'],
+    sq6_1: ['Waste is correctly sorted and stored?', 'Wordt afval correct gesorteerd en opgeslagen?', 'Les déchets sont-ils correctement triés et stockés ?'],
+    sq6_2: ['Hazardous substances correctly labeled and stored?', 'Zijn gevaarlijke stoffen correct gelabeld en opgeslagen?', 'Les substances dangereuses sont-elles correctement étiquetées et stockées ?'],
+    sq6_3: ['Drip trays are present for liquids?', 'Zijn er lekbakken voor vloeistoffen?', 'Des bacs de rétention sont-ils présents pour les liquides ?'],
+    sq6_4: ['Environmentally harmful activities limited or controlled?', 'Worden milieubelastende activiteiten beperkt of beheerst?', 'Les activités nuisibles à l’environnement sont-elles limitées ou maîtrisées ?'],
+    sq7_1: ['Employees are responsive to unsafe behavior?', 'Spreken medewerkers elkaar aan op onveilig gedrag?', 'Les collaborateurs réagissent-ils aux comportements dangereux ?'],
+    sq7_2: ['Unsafe situations are reported to the supervisor?', 'Worden onveilige situaties gemeld aan de leidinggevende?', 'Les situations dangereuses sont-elles signalées au responsable ?'],
+    sq7_3: ['LMRA (Last Minute Risk Analysis) is performed?', 'Wordt een LMRA (Last Minute Risico-Analyse) uitgevoerd?', 'Une LMRA (analyse de risques de dernière minute) est-elle réalisée ?'],
+
+    /* ---------- SPAQUE ---------- */
+    spEyebrow: ['SPAQUE INSPECTION', 'SPAQUE-INSPECTIE', 'INSPECTION SPAQUE'],
+    tabInfo: ['Info', 'Info', 'Info'],
+    tabParts: ['Parts', 'Onderdelen', 'Composants'],
+    tabChecklist: ['Checklist', 'Checklist', 'Check-list'],
+    tabPhotos: ['Photo overview', 'Foto-overzicht', 'Aperçu photos'],
+    tabFinish: ['Finish', 'Afronden', 'Clôturer'],
+    spInfoTitle: ['Inspection details', 'Inspectiegegevens', 'Données d’inspection'],
+    spNorm: ['Applicable standard:', 'Toepasselijke norm:', 'Norme applicable :'],
+    sp_project: ['Project', 'Project', 'Projet'],
+    sp_address: ['Address', 'Adres', 'Adresse'],
+    sp_date: ['Inspection date', 'Inspectiedatum', 'Date d’inspection'],
+    sp_inspector: ['Inspector', 'Inspecteur', 'Inspecteur'],
+    sp_zone: ['Zone inspected', 'Geïnspecteerde zone', 'Zone inspectée'],
+    sp_foundation: ['Foundation type', 'Type fundering', 'Type de fondation'],
+    sp_power: ['Power installed', 'Geïnstalleerd vermogen', 'Puissance installée'],
+    sp_modules: ['Module quantity', 'Aantal modules', 'Nombre de modules'],
+    sp_tilt: ['Nominal tilt', 'Nominale helling', 'Inclinaison nominale'],
+    sp_azimuth: ['Nominal azimuth', 'Nominaal azimut', 'Azimut nominal'],
+    spTechRef: ['Technical reference', 'Technische referentie', 'Référence technique'],
+    spTechRefAlt: ['Numbered mounting parts 1 to 18', 'Genummerde montageonderdelen 1 tot 18', 'Composants de montage numérotés 1 à 18'],
+    spPartsIntro: ['Each reference photo shows its parts list. Add as many site photos per group as needed.', 'Per referentiefoto staat de onderdelenlijst. Voeg per groep zoveel werffoto’s toe als nodig.', 'Chaque photo de référence montre sa liste de composants. Ajoutez autant de photos de chantier que nécessaire par groupe.'],
+    spRefPhoto: ['Reference photo {n}', 'Referentiefoto {n}', 'Photo de référence {n}'],
+    spPhotoCount: ['Photos added: {n}', 'Aantal toegevoegde foto’s: {n}', 'Photos ajoutées : {n}'],
+    spAddPhotos: ['📷 Add photos', '📷 Foto’s toevoegen', '📷 Ajouter des photos'],
+    spPhotoNote: ['Remark for photo {n}', 'Opmerking bij foto {n}', 'Remarque photo {n}'],
+    spSitePhoto: ['Site photo {n}', 'Werffoto {n}', 'Photo chantier {n}'],
+    spEditFields: ['✎ Edit rows', '✎ Rijen bewerken', '✎ Modifier les lignes'],
+    spAddRow: ['+ Add row', '+ Rij toevoegen', '+ Ajouter une ligne'],
+    spChecklistTitle: ['Inspection checklist', 'Inspectie-checklist', 'Check-list d’inspection'],
+    spRemark: ['Remark', 'Opmerking', 'Remarque'],
+    spPhotoBtn: ['📷 Photo', '📷 Foto', '📷 Photo'],
+    spNewSection: ['Section for the new row:', 'Sectie voor de nieuwe rij:', 'Section de la nouvelle ligne :'],
+    spNewRowName: ['Name of the check point:', 'Naam van het controlepunt:', 'Nom du point de contrôle :'],
+    spNewRowDefault: ['New check point', 'Nieuw controlepunt', 'Nouveau point de contrôle'],
+    spCustom: ['Custom', 'Eigen', 'Personnalisé'],
+    spPhotoOverview: ['Photo overview', 'Foto-overzicht', 'Aperçu des photos'],
+    spPhotoOverviewIntro: ['All photos from parts and checklist are collected automatically.', 'Alle foto’s uit onderdelen en checklist worden automatisch verzameld.', 'Toutes les photos des composants et de la check-list sont regroupées automatiquement.'],
+    spExtraPhoto: ['+ Extra photo', '+ Extra foto', '+ Photo supplémentaire'],
+    spExtraLabel: ['Extra photo', 'Extra foto', 'Photo supplémentaire'],
+    spPhotoDesc: ['Photo description', 'Fotobeschrijving', 'Description de la photo'],
+    spNoPhotos: ['No photos added yet.', 'Nog geen foto’s toegevoegd.', 'Aucune photo ajoutée.'],
+    spObservations: ['Observations and remarks', 'Vaststellingen en opmerkingen', 'Constatations et remarques'],
+    spObservationsPh: ['General remarks...', 'Algemene opmerkingen...', 'Remarques générales...'],
+    spFinishText: ['The PDF is created directly on this device and can be downloaded or shared.', 'De PDF wordt rechtstreeks op dit toestel gemaakt en kan gedownload of gedeeld worden.', 'Le PDF est créé directement sur cet appareil et peut être téléchargé ou partagé.'],
+    spConfirmNew: ['Start a new report? All entered data and photos are cleared; your checklist rows are kept.', 'Nieuw rapport starten? Alle ingevulde gegevens en foto’s worden gewist; je checklistrijen blijven bewaard.', 'Démarrer un nouveau rapport ? Toutes les données et photos sont effacées ; vos lignes de check-list sont conservées.'],
+    pdfParts: ['PARTS', 'ONDERDELEN', 'COMPOSANTS'],
+    pdfChecklist: ['CHECKLIST', 'CHECKLIST', 'CHECK-LIST'],
+    pdfObservations: ['OBSERVATIONS AND REMARKS', 'VASTSTELLINGEN EN OPMERKINGEN', 'CONSTATATIONS ET REMARQUES'],
+    pdfPhotoOverview: ['PHOTO OVERVIEW', 'FOTO-OVERZICHT', 'APERÇU DES PHOTOS'],
+    pdfPhotoRemark: ['Photo remark', 'Opmerking foto', 'Remarque photo'],
+
+    /* SPAQUE parts */
+    p1: ['Rail (C80×40×15×2)', 'Rail (C80×40×15×2)', 'Rail (C80×40×15×2)'],
+    p2: ['Rail joiner', 'Railverbinder', 'Éclisse de rail'],
+    p3: ['Rail clamp (L63×40×6)', 'Railklem (L63×40×6)', 'Bride de rail (L63×40×6)'],
+    p4: ['T screws M8×25 (lock panel)', 'T-bouten M8×25 (paneelbevestiging)', 'Vis en T M8×25 (fixation panneau)'],
+    p5: ['T screws M8×25 (lock panel + earthing clip)', 'T-bouten M8×25 (paneelbevestiging + aardingsclip)', 'Vis en T M8×25 (fixation panneau + clip de terre)'],
+    p6: ['Support beam (C90×40×15×2)', 'Draagbalk (C90×40×15×2)', 'Poutre support (C90×40×15×2)'],
+    p7: ['Brace', 'Schoor', 'Contreventement'],
+    p8: ['Brace', 'Schoor', 'Contreventement'],
+    p9: ['Connecting plate', 'Verbindingsplaat', 'Plaque de liaison'],
+    p10: ['10# pile (3 mm)', '10# paal (3 mm)', 'Pieu 10# (3 mm)'],
+    p11: ['10# pile (3 mm)', '10# paal (3 mm)', 'Pieu 10# (3 mm)'],
+    p12: ['M12×30 screws', 'M12×30 bouten', 'Vis M12×30'],
+    p13: ['M12×65 screws', 'M12×65 bouten', 'Vis M12×65'],
+    p14: ['L-shape connectors', 'L-vormige verbinders', 'Connecteurs en L'],
+    p15: ['M10×25 screws', 'M10×25 bouten', 'Vis M10×25'],
+    p16: ['M10×100 expansion bolt', 'M10×100 keilbout', 'Cheville d’expansion M10×100'],
+    p17: ['Φ10 bar', 'Φ10 staaf', 'Barre Φ10'],
+    p18: ['Bar clamp', 'Staafklem', 'Bride de barre'],
+
+    /* SPAQUE checklist sections */
+    cs1: ['All foundations', 'Alle funderingen', 'Toutes les fondations'],
+    cs2: ['Steel structure', 'Staalstructuur', 'Structure acier'],
+    cs3: ['PV modules', 'PV-modules', 'Modules PV'],
+    cs4: ['DC cabling', 'DC-bekabeling', 'Câblage DC'],
+    cs5: ['DC connectors', 'DC-connectoren', 'Connecteurs DC'],
+    cs6: ['Earthing', 'Aarding', 'Mise à la terre'],
+    /* SPAQUE checklist rows */
+    c1_1: ['Blocks levelled within design tolerances', 'Blokken waterpas binnen ontwerptoleranties', 'Blocs de niveau dans les tolérances de conception'],
+    c1_2: ['Blocks properly supported and stable, without rocking', 'Blokken goed ondersteund en stabiel, zonder te wiebelen', 'Blocs bien supportés et stables, sans basculement'],
+    c2_1: ['Row alignment checked', 'Uitlijning van de rijen gecontroleerd', 'Alignement des rangées vérifié'],
+    c2_2: ['Structure levelling checked longitudinally', 'Waterpas structuur gecontroleerd in langsrichting', 'Mise à niveau de la structure vérifiée longitudinalement'],
+    c2_3: ['Structure levelling checked transversely', 'Waterpas structuur gecontroleerd in dwarsrichting', 'Mise à niveau de la structure vérifiée transversalement'],
+    c2_4: ['Minimum module-to-ground clearance maintained', 'Minimale afstand module–grond gerespecteerd', 'Garde au sol minimale des modules respectée'],
+    c2_5: ['No sharp edges that could damage modules or cables', 'Geen scherpe randen die modules of kabels kunnen beschadigen', 'Aucune arête vive pouvant endommager modules ou câbles'],
+    c2_6: ['No visibly loose bolts', 'Geen zichtbaar losse bouten', 'Aucun boulon visiblement desserré'],
+    c2_7: ['L-shape connectors (14) installed and well fixed', 'L-vormige verbinders (14) geplaatst en goed vastgezet', 'Connecteurs en L (14) installés et bien fixés'],
+    c2_8: ['M10 bolt tightening (16) torque verified (22–30 N·m)', 'Aanhaalmoment M10-bout (16) gecontroleerd (22–30 N·m)', 'Couple de serrage boulon M10 (16) vérifié (22–30 N·m)'],
+    c2_9: ['Connecting plate (9) installed and well fixed', 'Verbindingsplaat (9) geplaatst en goed vastgezet', 'Plaque de liaison (9) installée et bien fixée'],
+    c2_10: ['M12 screws (12 and 13) torque verified (43–55 N·m)', 'Aanhaalmoment M12-bouten (12 en 13) gecontroleerd (43–55 N·m)', 'Couple de serrage vis M12 (12 et 13) vérifié (43–55 N·m)'],
+    c2_11: ['Braces (7 and 8) installed and well fixed', 'Schoren (7 en 8) geplaatst en goed vastgezet', 'Contreventements (7 et 8) installés et bien fixés'],
+    c2_12: ['Support beam (6) installed and well fixed', 'Draagbalk (6) geplaatst en goed vastgezet', 'Poutre support (6) installée et bien fixée'],
+    c2_13: ['Support beam M12 bolt torque verified (43–55 N·m)', 'Aanhaalmoment M12-bout draagbalk gecontroleerd (43–55 N·m)', 'Couple de serrage boulon M12 poutre support vérifié (43–55 N·m)'],
+    c2_14: ['Rail clamps (3) installed and well fixed', 'Railklemmen (3) geplaatst en goed vastgezet', 'Brides de rail (3) installées et bien fixées'],
+    c2_15: ['Rails (1) installed and well fixed', 'Rails (1) geplaatst en goed vastgezet', 'Rails (1) installés et bien fixés'],
+    c2_16: ['Φ10 bar (17) installed and well tightened', 'Φ10 staaf (17) geplaatst en goed aangespannen', 'Barre Φ10 (17) installée et bien serrée'],
+    c3_1: ['Module rows visually aligned', 'Modulerijen visueel uitgelijnd', 'Rangées de modules visuellement alignées'],
+    c3_2: ['No cracked or broken module glass', 'Geen gebarsten of gebroken moduleglas', 'Aucun verre de module fissuré ou cassé'],
+    c3_3: ['No damaged module frames', 'Geen beschadigde moduleframes', 'Aucun cadre de module endommagé'],
+    c3_4: ['No cables trapped between module and rails', 'Geen kabels gekneld tussen module en rails', 'Aucun câble coincé entre module et rails'],
+    c3_5: ['Module dilatation gaps respected', 'Uitzettingsvoegen tussen modules gerespecteerd', 'Joints de dilatation entre modules respectés'],
+    c3_6: ['Module bolt M8 tightening torque verified 32 N·m', 'Aanhaalmoment M8-modulebout gecontroleerd 32 N·m', 'Couple de serrage boulon M8 module vérifié 32 N·m'],
+    c3_7: ['Earthing clips installed and locked, one per panel', 'Aardingsclips geplaatst en vergrendeld, één per paneel', 'Clips de terre installés et verrouillés, un par panneau'],
+    c4_1: ['Cables securely fixed to structure', 'Kabels stevig bevestigd aan de structuur', 'Câbles solidement fixés à la structure'],
+    c4_2: ['No cables rubbing against sharp steel edges', 'Geen kabels die schuren tegen scherpe staalranden', 'Aucun câble frottant contre des arêtes vives'],
+    c4_3: ['No excessive tension on cables', 'Geen overmatige trekspanning op kabels', 'Aucune tension excessive sur les câbles'],
+    c4_4: ['Sufficient cable slack for thermal movement', 'Voldoende kabelspeling voor thermische uitzetting', 'Mou de câble suffisant pour la dilatation thermique'],
+    c4_5: ['String cables labelled', 'Stringkabels gelabeld', 'Câbles de string étiquetés'],
+    c5_1: ['Connectors fully engaged and locked', 'Connectoren volledig ingeklikt en vergrendeld', 'Connecteurs entièrement engagés et verrouillés'],
+    c5_2: ['No visibly damaged connectors', 'Geen zichtbaar beschadigde connectoren', 'Aucun connecteur visiblement endommagé'],
+    c6_1: ['Earthing continuity tested and accepted', 'Aardingscontinuïteit getest en goedgekeurd', 'Continuité de terre testée et acceptée']
+  };
+
+  const KEY = 'edp-lang';
+  function detect() {
+    try { const s = localStorage.getItem(KEY); if (LANGS.includes(s)) return s; } catch (e) {}
+    const list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en']);
+    for (const l of list) { const c = String(l).slice(0, 2).toLowerCase(); if (LANGS.includes(c)) return c; }
+    return 'en';
+  }
+  let lang = detect();
+  const listeners = [];
+  function t(key, vars) {
+    const row = D[key];
+    let s = row ? (row[LANGS.indexOf(lang)] || row[0]) : key;
+    if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
+    return s;
+  }
+  function has(key) { return Object.prototype.hasOwnProperty.call(D, key); }
+  /* Find the key whose text (in any language) matches a given string - used to migrate old drafts */
+  function keyFor(text, prefix) {
+    const v = String(text || '').trim();
+    for (const k in D) if ((!prefix || (prefix instanceof RegExp ? prefix.test(k) : k.startsWith(prefix))) && D[k].some(x => x === v)) return k;
+    return null;
+  }
+  function apply(root) {
+    (root || document).querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+    (root || document).querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+    (root || document).querySelectorAll('[data-i18n-alt]').forEach(el => { el.alt = t(el.dataset.i18nAlt); });
+    (root || document).querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); el.setAttribute('aria-label', el.title); });
+    document.documentElement.lang = lang;
+    document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  }
+  function setLang(l) {
+    if (!LANGS.includes(l)) return;
+    lang = l;
+    try { localStorage.setItem(KEY, l); } catch (e) {}
+    apply();
+    listeners.forEach(fn => fn(l));
+  }
+  function mountSwitch(host) {
+    host.innerHTML = LANGS.map(l => `<button type="button" data-lang="${l}">${l.toUpperCase()}</button>`).join('');
+    host.querySelectorAll('button').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+    apply();
+  }
+  global.I18N = { t, has, keyFor, apply, setLang, mountSwitch, onChange: fn => listeners.push(fn), get lang() { return lang; }, LANGS };
+})(window);

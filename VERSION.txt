@@ -1,3 +1,4 @@
-Enerdeal Reports
-Version 3.0
-Modules: Commissioning Report and Site Safety Inspection
+EDP Reports
+Version 4.0 - 26 October 2026
+Modules: Commissioning Report, Site Safety Inspection, SPAQUE Inspection Report
+Languages: English, Nederlands, Français

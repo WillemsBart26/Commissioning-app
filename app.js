@@ -1,19 +1,185 @@
-(()=>{'use strict';
-const $=s=>document.querySelector(s), clone=v=>structuredClone(v), today=()=>new Date().toISOString().slice(0,10), esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const modules={commissioning:{title:'Commissioning Report',eyebrow:'COMMISSIONING',storage:'enerdeal-v3-commissioning',details:[['company','Company','text'],['reportNo','Report number','text'],['client','Client / customer','text'],['date','Commissioning date','date'],['site','Site name','text'],['technician','Technician','text'],['address','Site address','text'],['equipment','Equipment / model','text']],completion:[['finalStatus','Final status','select'],['signoff','Technician sign-off','text'],['clientSignoff','Client sign-off','text']],questions:['Visual condition and installation','Protective earth / bonding','Cable terminations and torque','Cable labels and identification','Fuses, breakers and protection settings','Emergency stop / isolation','Firmware and parameter settings','Functional operation','Alarms and communications','Drawings and documentation updated']},
-safety:{title:'Site Safety Inspection',eyebrow:'SITE SAFETY',storage:'enerdeal-v3-safety',details:[['company','Company','text'],['project','Project','text'],['date','Date','date'],['location','Location','text'],['inspector','Inspection done by','text']],completion:[['positive','Positive remarks','text'],['actions','General action points','text'],['signoff','Inspector sign-off','text']],sections:[['1. Organization & Access',['Site is correctly demarcated? (fences, signage)','Site access controlled? (access control, visitor log)','Valid safety certificates and ID are present?','Toolbox meeting or site introduction conducted?']],['2. Personal Protective Equipment (PPE)',['Does everyone on-site wear safety shoes?','Does everyone on-site wear a safety helmet?','Does everyone on-site wear safety glasses?','Does everyone on-site wear high-visibility clothing?']],['3. Health & Safety',['First-aid kit available and complete?','Emergency number posters are visible?','Fire extinguishers available and certified?','Sanitary facilities are present and clean?','Order and cleanliness on the site?']],['4. Work Equipment and Machinery',['Equipment is in good condition and certified?','Are all users trained and authorized?','Safe use is monitored?']],['5. Fall Protection / Working at Heights',['Scaffolding is certified and has a tag?','Edge protection / guardrails are present?','Harness and anchorage are used correctly?']],['6. Environment (SHE)',['Waste is correctly sorted and stored?','Hazardous substances correctly labeled and stored?','Drip trays are present for liquids?','Environmentally harmful activities limited or controlled?']],['7. Behavior & Reporting Culture',['Employees are responsive to unsafe behavior?','Unsafe situations are reported to the supervisor?','LMRA (Last Minute Risk Analysis) is performed?']]]}};
-let type=null,state=null,edit=false;
-function defaults(t){const m=modules[t], qs=t==='safety'?m.sections.flatMap(([section,items])=>items.map(label=>({id:crypto.randomUUID(),section,label,photosEnabled:true}))):m.questions.map(label=>({id:crypto.randomUUID(),section:'Commissioning checklist',label,photosEnabled:true}));return{values:{company:'Enerdeal',date:today()},questions:qs,answers:{},generalNotes:'',generalPhotos:[]}}
-function load(t){type=t;try{state=JSON.parse(localStorage.getItem(modules[t].storage))||defaults(t)}catch{state=defaults(t)};state.questions??=defaults(t).questions;state.answers??={};state.generalPhotos??=[];render()}
-function save(){localStorage.setItem(modules[type].storage,JSON.stringify(state));$('#saveStatus').textContent='Saved on this device'}
-function field([id,label,kind],host){const l=document.createElement('label');l.textContent=label;let x;if(kind==='select'){x=document.createElement('select');['Passed','Passed with remarks','Failed'].forEach(v=>x.add(new Option(v,v)))}else{x=document.createElement('input');x.type=kind}x.value=state.values[id]||'';x.oninput=()=>{state.values[id]=x.value;save()};l.appendChild(x);host.appendChild(l)}
-function render(){const m=modules[type];$('#home').classList.add('hidden');$('#report').classList.remove('hidden');$('#actions').classList.remove('hidden');$('#backBtn').classList.remove('hidden');$('#appTitle').textContent=m.title;$('#moduleTitle').textContent=m.title;$('#moduleEyebrow').textContent=m.eyebrow;const d=$('#detailFields');d.innerHTML='';m.details.forEach(f=>field(f,d));const c=$('#completionFields');c.innerHTML='';m.completion.forEach(f=>field(f,c));$('#generalNotes').value=state.generalNotes||'';renderQuestions();renderPhotos(state.generalPhotos,$('#generalPhotoGrid'),()=>save())}
-function renderQuestions(){const host=$('#questionList');host.innerHTML='';let sec='';state.questions.forEach((q,i)=>{if(q.section!==sec){sec=q.section;const h=document.createElement('h3');h.textContent=sec;host.appendChild(h)}const a=state.answers[q.id]??={status:'',remark:'',photos:[]};const box=document.createElement('div');box.className='question '+(a.status==='NOK'||a.status==='Fail'?'nok':'');box.innerHTML=`<div class="qtop"><strong>${esc(q.label)}</strong><div class="qtools ${edit?'':'hidden'}"><button data-rename>✎</button><button data-photo>${q.photosEnabled?'📷':'🚫'}</button><button data-delete>×</button></div></div><div class="status"></div><textarea class="qremark" rows="2" placeholder="Remarks / action required">${esc(a.remark)}</textarea><label class="photoAdd ${q.photosEnabled?'':'hidden'}">＋ Add photo<input type="file" accept="image/*" capture="environment" multiple></label><div class="photos"></div>`;const stat=box.querySelector('.status'),vals=type==='safety'?['OK','NOK','N/A']:['Pass','Fail','N/A'];vals.forEach(v=>{const l=document.createElement('label');l.innerHTML=`<input type="radio" name="s${q.id}" value="${v}" ${a.status===v?'checked':''}><span>${v}</span>`;l.querySelector('input').onchange=()=>{a.status=v;save();renderQuestions()};stat.appendChild(l)});box.querySelector('.qremark').oninput=e=>{a.remark=e.target.value;save()};box.querySelector('input[type=file]').onchange=e=>addPhotos(e.target.files,a.photos,()=>{save();renderQuestions()});renderPhotos(a.photos,box.querySelector('.photos'),()=>{save();renderQuestions()});box.querySelector('[data-rename]').onclick=()=>{const x=prompt('Question name:',q.label);if(x){q.label=x;save();renderQuestions()}};box.querySelector('[data-photo]').onclick=()=>{q.photosEnabled=!q.photosEnabled;save();renderQuestions()};box.querySelector('[data-delete]').onclick=()=>{if(confirm('Delete this checklist question?')){state.questions.splice(i,1);delete state.answers[q.id];save();renderQuestions()}};host.appendChild(box)})}
-function renderPhotos(arr,host,changed){host.innerHTML='';arr.forEach((p,i)=>{const x=document.createElement('div');x.className='photo';x.innerHTML=`<img src="${p.data}" alt="Photo"><button>×</button><input value="${esc(p.caption||'')}" placeholder="Caption">`;x.querySelector('button').onclick=()=>{arr.splice(i,1);changed()};x.querySelector('input').oninput=e=>{p.caption=e.target.value;save()};host.appendChild(x)})}
-async function photo(file){return new Promise((res,rej)=>{const r=new FileReader;r.onerror=rej;r.onload=()=>{const im=new Image;im.onerror=rej;im.onload=()=>{const max=1000,s=Math.min(1,max/Math.max(im.width,im.height)),cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);res({data:cv.toDataURL('image/jpeg',.65),caption:file.name.replace(/\.[^.]+$/,'')})};im.src=r.result};r.readAsDataURL(file)})}
-async function addPhotos(files,arr,done){for(const f of [...files].slice(0,6))arr.push(await photo(f));done();toast('Photo added')}
-function pdf(){const m=modules[type],doc=new TinyPDF({title:m.title}),C={n:'#0b3142',t:'#08a3a3',i:'#17252d',g:'#657780',l:'#d8e2e6',r:'#ba3a45'},M=15,W=180;let y=20;const page=()=>{doc.rect(0,0,210,24,C.n);doc.text(m.title.toUpperCase(),M,15,14,'bold','#fff');y=34},ensure=h=>{if(y+h>275){doc.addPage();page()}},line=(k,v)=>{ensure(11);doc.text(k,M,y,8,'bold',C.g);doc.multiline(v||'—',68,y,125,9,4,'normal',C.i);y+=Math.max(10,doc.wrap(v||'—',125,9).length*4+4)};page();m.details.forEach(([id,label])=>line(label,state.values[id]));state.questions.forEach(q=>{const a=state.answers[q.id]||{};ensure(22);doc.line(M,y-3,195,y-3,C.l,.25);doc.multiline(q.label,M,y,130,9,4,'bold',C.i);doc.text(a.status||'Not checked',195,y,9,'bold',a.status==='NOK'||a.status==='Fail'?C.r:C.t,'right');y+=Math.max(10,doc.wrap(q.label,130,9).length*4+3);if(a.remark)line('Remark / action',a.remark);for(const p of a.photos||[]){ensure(70);try{doc.addJpeg(p.data,55,y,100,60)}catch{};y+=64;if(p.caption)line('Photo',p.caption)}});if(state.generalNotes)line('General notes',state.generalNotes);for(const p of state.generalPhotos){ensure(70);try{doc.addJpeg(p.data,55,y,100,60)}catch{};y+=64}m.completion.forEach(([id,label])=>line(label,state.values[id]));doc.addFooters('Enerdeal');return doc.output()}
-function filename(){return `${type==='safety'?'Site_Safety_Inspection':'Commissioning_Report'}_${state.values.project||state.values.reportNo||state.values.site||today()}.pdf`.replace(/[^a-z0-9_.-]+/gi,'_')}
-function download(){const b=pdf(),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=filename();a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}async function share(){const b=pdf(),f=new File([b],filename(),{type:'application/pdf'});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[f]})))await navigator.share({title:modules[type].title,files:[f]});else download()}
-function toast(s){const t=$('#toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
-document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>load(b.dataset.open));$('#backBtn').onclick=()=>{save();type=null;$('#home').classList.remove('hidden');$('#report').classList.add('hidden');$('#actions').classList.add('hidden');$('#backBtn').classList.add('hidden');$('#appTitle').textContent='Enerdeal Reports'};$('#editBtn').onclick=()=>{edit=!edit;$('#addQuestionBtn').classList.toggle('hidden',!edit);$('#editBtn').textContent=edit?'✓ Done':'✎ Edit checklist';renderQuestions()};$('#addQuestionBtn').onclick=()=>{const label=prompt('Question name:','New checklist question');if(label){state.questions.push({id:crypto.randomUUID(),section:'Custom questions',label,photosEnabled:true});save();renderQuestions()}};$('#generalNotes').oninput=e=>{state.generalNotes=e.target.value;save()};$('#generalPhotos').onchange=e=>addPhotos(e.target.files,state.generalPhotos,()=>{save();render()});$('#newBtn').onclick=()=>{if(confirm('Start a new report? Your checklist template will be kept.')){const qs=clone(state.questions);state=defaults(type);state.questions=qs;save();render()}};$('#downloadBtn').onclick=download;$('#shareBtn').onclick=()=>share().catch(()=>toast('Sharing cancelled'));$('#installBtn').onclick=()=>toast('Use your browser menu: Install app / Add to Home Screen');if('serviceWorker'in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./sw.js');})();
+/* EDP Reports - Commissioning Report and Site Safety Inspection */
+(() => {
+  'use strict';
+  const { t, esc, today, uid, toast } = EDP;
+  const $ = s => document.querySelector(s);
+
+  const modules = {
+    commissioning: {
+      titleKey: 'tileCommTitle', eyebrowKey: 'commEyebrow', storage: 'enerdeal-v3-commissioning', file: 'Commissioning_Report',
+      statuses: ['Pass', 'Fail', 'N/A'], bad: 'Fail',
+      details: [['company', 'f_company', 'text'], ['reportNo', 'f_reportNo', 'text'], ['client', 'f_client', 'text'], ['date', 'f_commDate', 'date'], ['site', 'f_site', 'text'], ['technician', 'f_technician', 'text'], ['address', 'f_address', 'text'], ['equipment', 'f_equipment', 'text']],
+      completion: [['finalStatus', 'f_finalStatus', 'select'], ['signoff', 'f_signoff', 'text'], ['clientSignoff', 'f_clientSignoff', 'text']],
+      sections: [['commSection', ['cq1', 'cq2', 'cq3', 'cq4', 'cq5', 'cq6', 'cq7', 'cq8', 'cq9', 'cq10']]]
+    },
+    safety: {
+      titleKey: 'tileSafetyTitle', eyebrowKey: 'safetyEyebrow', storage: 'enerdeal-v3-safety', file: 'Site_Safety_Inspection',
+      statuses: ['OK', 'NOK', 'N/A'], bad: 'NOK',
+      details: [['company', 'f_company', 'text'], ['project', 'f_project', 'text'], ['date', 'f_date', 'date'], ['location', 'f_location', 'text'], ['inspector', 'f_inspector', 'text']],
+      completion: [['positive', 'f_positive', 'textarea'], ['actions', 'f_actions', 'textarea'], ['signoff', 'f_inspSignoff', 'text']],
+      sections: [
+        ['ss1', ['sq1_1', 'sq1_2', 'sq1_3', 'sq1_4']], ['ss2', ['sq2_1', 'sq2_2', 'sq2_3', 'sq2_4']],
+        ['ss3', ['sq3_1', 'sq3_2', 'sq3_3', 'sq3_4', 'sq3_5']], ['ss4', ['sq4_1', 'sq4_2', 'sq4_3']],
+        ['ss5', ['sq5_1', 'sq5_2', 'sq5_3']], ['ss6', ['sq6_1', 'sq6_2', 'sq6_3', 'sq6_4']], ['ss7', ['sq7_1', 'sq7_2', 'sq7_3']]
+      ]
+    }
+  };
+  const FINAL = ['Passed', 'Passed with remarks', 'Failed'];
+
+  let type = null, state = null, edit = false, logo = null;
+  EDP.imageData('assets/edp-logo.jpg').then(d => { logo = d; });
+
+  const qLabel = q => q.label || t(q.key);
+  const qSection = q => q.sectionKey ? t(q.sectionKey) : (q.section || t('customQuestions'));
+
+  function defaults(tp) {
+    const m = modules[tp];
+    const questions = m.sections.flatMap(([sectionKey, keys]) => keys.map(key => ({ id: uid(), key, sectionKey, photosEnabled: true })));
+    return { values: { company: 'EDP', date: today() }, questions, answers: {}, generalNotes: '', generalPhotos: [] };
+  }
+  /* Older drafts stored English text; link them to translation keys so they follow the chosen language. */
+  function migrate(s, tp) {
+    s.values ??= {}; s.answers ??= {}; s.generalPhotos ??= [];
+    if (!Array.isArray(s.questions) || !s.questions.length) s.questions = defaults(tp).questions;
+    const qp = tp === 'safety' ? 'sq' : 'cq';
+    s.questions.forEach(q => {
+      if (!q.key && q.label) { const k = I18N.keyFor(q.label, qp); if (k) { q.key = k; delete q.label; } }
+      if (!q.sectionKey && q.section) {
+        const k = q.section === 'Commissioning checklist' ? 'commSection' : q.section === 'Custom questions' ? 'customQuestions' : I18N.keyFor(q.section, 'ss');
+        if (k) { q.sectionKey = k; delete q.section; }
+      }
+    });
+    Object.values(s.answers).forEach(a => { a.photos ??= []; });
+    return s;
+  }
+  function load(tp) {
+    type = tp; edit = false;
+    state = migrate(EDP.load(modules[tp].storage) || defaults(tp), tp);
+    [...state.generalPhotos, ...Object.values(state.answers).flatMap(a => a.photos)].forEach(p => EDP.ensureJpeg(p.data));
+    render(); window.scrollTo(0, 0);
+  }
+  const save = () => EDP.safeSave(modules[type].storage, state);
+
+  function field([id, key, kind], host) {
+    const l = document.createElement('label');
+    l.append(t(key));
+    let x;
+    if (kind === 'select') {
+      x = document.createElement('select');
+      x.add(new Option(t('choose'), ''));
+      FINAL.forEach(v => x.add(new Option(t('fs_' + v), v)));
+    } else if (kind === 'textarea') { x = document.createElement('textarea'); x.rows = 3; }
+    else { x = document.createElement('input'); x.type = kind; }
+    x.value = state.values[id] || '';
+    x.oninput = x.onchange = () => { state.values[id] = x.value; save(); };
+    l.appendChild(x); host.appendChild(l);
+  }
+
+  function render() {
+    if (!type) return;
+    const m = modules[type];
+    $('#home').classList.add('hidden'); $('#report').classList.remove('hidden'); $('#actions').classList.remove('hidden'); $('#backBtn').classList.remove('hidden');
+    $('#appTitle').textContent = t(m.titleKey); $('#moduleTitle').textContent = t(m.titleKey); $('#moduleEyebrow').textContent = t(m.eyebrowKey);
+    $('#editBtn').textContent = edit ? t('done') : t('editChecklist');
+    $('#addQuestionBtn').classList.toggle('hidden', !edit);
+    const d = $('#detailFields'); d.innerHTML = ''; m.details.forEach(f => field(f, d));
+    const c = $('#completionFields'); c.innerHTML = ''; m.completion.forEach(f => field(f, c));
+    $('#generalNotes').value = state.generalNotes || '';
+    renderQuestions();
+    renderGeneralPhotos();
+  }
+  function renderGeneralPhotos() { renderPhotos(state.generalPhotos, $('#generalPhotoGrid'), () => { save(); renderGeneralPhotos(); }); }
+
+  function renderQuestions() {
+    const m = modules[type], host = $('#questionList');
+    host.innerHTML = '';
+    let sec = null;
+    state.questions.forEach((q, i) => {
+      const s = qSection(q);
+      if (s !== sec) { sec = s; const h = document.createElement('h3'); h.textContent = s; host.appendChild(h); }
+      const a = state.answers[q.id] ??= { status: '', remark: '', photos: [] };
+      const box = document.createElement('div');
+      box.className = 'question' + (a.status === m.bad ? ' nok' : '');
+      box.innerHTML = `<div class="qtop"><strong>${esc(qLabel(q))}</strong><div class="qtools ${edit ? '' : 'hidden'}"><button type="button" data-rename title="${esc(t('rename'))}">✎</button><button type="button" data-photo title="${esc(t('togglePhotos'))}">${q.photosEnabled ? '📷' : '🚫'}</button><button type="button" data-delete title="${esc(t('del'))}">×</button></div></div>
+        <div class="status">${m.statuses.map(v => `<button type="button" data-v="${v}" class="${a.status === v ? 'sel ' + (v === m.bad ? 'nok' : v === 'N/A' ? 'na' : 'ok') : ''}">${esc(t('st_' + v))}</button>`).join('')}</div>
+        <textarea class="qremark" rows="2" placeholder="${esc(t('remarkPh'))}">${esc(a.remark)}</textarea>
+        <label class="photoAdd ${q.photosEnabled ? '' : 'hidden'}"><span>${esc(t('addPhoto'))}</span><input type="file" accept="image/*" multiple></label>
+        <div class="photos"></div>`;
+      box.querySelectorAll('.status button').forEach(b => b.onclick = () => { a.status = a.status === b.dataset.v ? '' : b.dataset.v; save(); renderQuestions(); });
+      box.querySelector('.qremark').oninput = e => { a.remark = e.target.value; save(); };
+      box.querySelector('input[type=file]').onchange = async e => { a.photos.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ data: p.data, caption: '' }))); e.target.value = ''; save(); renderQuestions(); };
+      const ph = box.querySelector('.photos'), redraw = () => { save(); renderPhotos(a.photos, ph, redraw); };
+      renderPhotos(a.photos, ph, redraw);
+      box.querySelector('[data-rename]').onclick = () => { const x = prompt(t('questionName'), qLabel(q)); if (x !== null && x.trim()) { q.label = x.trim(); save(); renderQuestions(); } };
+      box.querySelector('[data-photo]').onclick = () => { q.photosEnabled = !q.photosEnabled; save(); renderQuestions(); };
+      box.querySelector('[data-delete]').onclick = () => { if (confirm(t('deleteQuestion'))) { state.questions.splice(i, 1); delete state.answers[q.id]; save(); renderQuestions(); } };
+      host.appendChild(box);
+    });
+  }
+
+  function renderPhotos(arr, host, changed) {
+    host.innerHTML = '';
+    arr.forEach((p, i) => {
+      const x = document.createElement('div'); x.className = 'photo';
+      x.innerHTML = `<img src="${p.data}" alt="${esc(t('photo'))} ${i + 1}"><button type="button" class="x" title="${esc(t('removePhoto'))}">×</button><input value="${esc(p.caption || '')}" placeholder="${esc(t('caption'))}">`;
+      x.querySelector('.x').onclick = () => { arr.splice(i, 1); changed(); };
+      x.querySelector('input').oninput = e => { p.caption = e.target.value; save(); };
+      host.appendChild(x);
+    });
+  }
+
+  function pdf() {
+    const m = modules[type], title = t(m.titleKey), doc = new TinyPDF({ title });
+    const C = { i: '#17212b', g: '#5f6c78', l: '#d9e1e7', r: '#b42318', ok: '#1f7a3d', a: '#14a9bb', n: '#272e3b' }, M = 15;
+    let y = 0;
+    const page = () => { EDP.pdfHeader(doc, title, logo); y = 34; };
+    const ensure = h => { if (y + h > 278) { doc.addPage(); page(); } };
+    const line = (k, v) => { const lines = doc.wrap(v || '—', 125, 9); ensure(Math.min(lines.length * 4 + 6, 60)); doc.text(k, M, y, 8, 'bold', C.g); lines.forEach(ln => { ensure(5); doc.text(ln, 68, y, 9, 'normal', C.i); y += 4; }); y += 4; };
+    const img = (data, maxH = 62) => { const j = EDP.jpegSync(data); if (!j) return; ensure(maxH + 4); try { y += doc.addJpegFit(j, M, y, 180, maxH) + 4; } catch (e) {} };
+    const val = (id, kind) => kind === 'select' && state.values[id] ? t('fs_' + state.values[id]) : state.values[id];
+    page();
+    m.details.forEach(([id, key, kind]) => line(t(key), val(id, kind)));
+    let sec = null;
+    state.questions.forEach(q => {
+      const a = state.answers[q.id] || {};
+      const s = qSection(q);
+      if (s !== sec) { sec = s; ensure(18); y += 3; doc.text(s.toUpperCase(), M, y, 10.5, 'bold', C.n); y += 8; }
+      const lbl = doc.wrap(qLabel(q), 140, 9);
+      ensure(lbl.length * 4 + 8);
+      doc.line(M, y - 4, 195, y - 4, C.l, .25);
+      lbl.forEach((ln, k) => doc.text(ln, M, y + k * 4, 9, 'bold', C.i));
+      doc.text(a.status ? t('st_' + a.status) : t('notChecked'), 195, y, 9, 'bold', a.status === m.bad ? C.r : a.status ? C.ok : C.g, 'right');
+      y += Math.max(8, lbl.length * 4 + 4);
+      if (a.remark) line(t('remarkAction'), a.remark);
+      (a.photos || []).forEach(p => { img(p.data); if (p.caption) line(t('photo'), p.caption); });
+    });
+    if (state.generalNotes || state.generalPhotos.length) { ensure(18); y += 3; doc.text(t('generalNotes').toUpperCase(), M, y, 10.5, 'bold', C.n); y += 8; }
+    if (state.generalNotes) line(t('generalNotes'), state.generalNotes);
+    state.generalPhotos.forEach(p => { img(p.data); if (p.caption) line(t('photo'), p.caption); });
+    ensure(18); y += 3; doc.text(t('completion').toUpperCase(), M, y, 10.5, 'bold', C.n); y += 8;
+    m.completion.forEach(([id, key, kind]) => line(t(key), val(id, kind)));
+    EDP.pdfFooter(doc);
+    return doc.output();
+  }
+  const filename = () => EDP.safeName(`${modules[type].file}_${state.values.project || state.values.reportNo || state.values.site || today()}.pdf`);
+  function makePdf() { try { return pdf(); } catch (e) { console.error(e); toast(t('pdfFailed')); return null; } }
+
+  /* Events */
+  document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => load(b.dataset.open));
+  $('#backBtn').onclick = () => {
+    if (type) save();
+    type = null;
+    $('#home').classList.remove('hidden'); $('#report').classList.add('hidden'); $('#actions').classList.add('hidden'); $('#backBtn').classList.add('hidden');
+    $('#appTitle').textContent = t('appName'); window.scrollTo(0, 0);
+  };
+  $('#editBtn').onclick = () => { edit = !edit; $('#addQuestionBtn').classList.toggle('hidden', !edit); $('#editBtn').textContent = edit ? t('done') : t('editChecklist'); renderQuestions(); };
+  $('#addQuestionBtn').onclick = () => { const label = prompt(t('questionName'), t('newQuestion')); if (label && label.trim()) { state.questions.push({ id: uid(), sectionKey: 'customQuestions', label: label.trim(), photosEnabled: true }); save(); renderQuestions(); } };
+  $('#generalNotes').oninput = e => { state.generalNotes = e.target.value; save(); };
+  $('#generalPhotos').onchange = async e => { state.generalPhotos.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ data: p.data, caption: '' }))); e.target.value = ''; save(); render(); };
+  $('#newBtn').onclick = () => { if (confirm(t('confirmNew'))) { const qs = structuredClone(state.questions); state = defaults(type); state.questions = qs; save(); render(); } };
+  $('#downloadBtn').onclick = () => { const b = makePdf(); if (b) EDP.download(b, filename()); };
+  $('#shareBtn').onclick = () => { const b = makePdf(); if (b) EDP.deliver(b, filename(), t(modules[type].titleKey)).catch(e => { if (e && e.name !== 'AbortError') EDP.download(b, filename()); else toast(t('sharingCancelled')); }); };
+
+  I18N.onChange(() => { if (type) render(); else $('#appTitle').textContent = t('appName'); });
+  EDP.initShell();
+})();
