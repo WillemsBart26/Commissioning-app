@@ -137,3 +137,14 @@ table.data select{padding:7px;font-size:14px;min-width:120px}
 
 .gate-card label.check-row{flex-direction:row;align-items:center;gap:10px;color:var(--ink);font-weight:600;font-size:14px;cursor:pointer}
 .gate-card label.check-row input{width:22px;height:22px;margin:0;accent-color:var(--navy);flex:none}
+
+/* Settings */
+.user-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #edf1f4;flex-wrap:wrap}
+.user-item .who{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 180px;overflow-wrap:anywhere}
+.user-item .what{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex:0 1 240px}
+.user-item .what select{min-width:200px}
+.user-item .what button{min-height:38px}
+.invite-form{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin:12px 0}
+.btnlink{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+@media(max-width:600px){.invite-form{grid-template-columns:1fr}.user-item .what{align-items:stretch;flex-basis:100%}.user-item .what select{min-width:0}}
+.user-item .what .pill{align-self:flex-end}@media(max-width:600px){.user-item .what .pill{align-self:flex-start}}

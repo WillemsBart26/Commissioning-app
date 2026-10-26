@@ -204,6 +204,7 @@
     card.classList.remove('hidden');
     $('#signOutBtn').onclick = async () => { if (confirm(t('confirmSignOut'))) { await EDPAuth.signOut(); location.reload(); } };
     $('#dashTile').classList.toggle('hidden', !(me.role === 'supervisor' || me.role === 'admin'));
+    $('#setTile').classList.toggle('hidden', me.role !== 'admin');
   }
 
   /* Events */

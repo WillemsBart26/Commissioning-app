@@ -321,8 +321,31 @@
     dashLoadError: ['Could not load the overview. Check your internet connection.', 'Overzicht kon niet geladen worden. Controleer je internetverbinding.', 'Impossible de charger le suivi. Vérifiez votre connexion.'],
     dashRoleSaved: ['Role updated', 'Rol aangepast', 'Rôle mis à jour'],
     role_worker: ['Employee', 'Medewerker', 'Collaborateur'],
-    role_supervisor: ['Supervisor', 'Leidinggevende', 'Responsable'],
-    role_admin: ['Administrator', 'Beheerder', 'Administrateur']
+    role_supervisor: ['Supervisor (reads VCA)', 'Leidinggevende (leest VCA)', 'Responsable (lit le VCA)'],
+    role_admin: ['Administrator', 'Beheerder', 'Administrateur'],
+    /* ---------- Settings ---------- */
+    setTile: ['Settings', 'Instellingen', 'Paramètres'],
+    setTileSub: ['Who may read the VCA overview (administrator)', 'Wie het VCA-overzicht mag lezen (beheerder)', 'Qui peut consulter le suivi VCA (administrateur)'],
+    setTitle: ['Settings', 'Instellingen', 'Paramètres'],
+    setNoAccess: ['Only the administrator can change settings.', 'Alleen de beheerder kan instellingen wijzigen.', 'Seul l’administrateur peut modifier les paramètres.'],
+    setUsers: ['Users and rights', 'Gebruikers en rechten', 'Utilisateurs et droits'],
+    setUsersIntro: ['Choose per person what they may do. “Supervisor” = may read the VCA overview.', 'Kies per persoon wat die mag. “Leidinggevende” = mag het VCA-overzicht lezen.', 'Choisissez pour chaque personne ce qu’elle peut faire. « Responsable » = peut consulter le suivi VCA.'],
+    setSearch: ['Search name or e-mail', 'Zoek op naam of e-mail', 'Rechercher un nom ou un e-mail'],
+    setYou: ['you', 'jij', 'vous'],
+    setRoleHelp_worker: ['Makes reports, sees only own counter', 'Maakt rapporten, ziet alleen eigen teller', 'Crée des rapports, voit seulement son compteur'],
+    setRoleHelp_supervisor: ['Can read the VCA overview, cannot change anything', 'Mag het VCA-overzicht lezen, kan niets wijzigen', 'Peut consulter le suivi VCA, ne peut rien modifier'],
+    setRoleHelp_admin: ['Reads everything and manages rights', 'Leest alles en beheert rechten', 'Voit tout et gère les droits'],
+    setConfirmAdmin: ['Make {n} administrator? They will be able to change everyone’s rights.', '{n} beheerder maken? Die kan dan ieders rechten wijzigen.', 'Nommer {n} administrateur ? Cette personne pourra modifier les droits de tous.'],
+    setInvite: ['Give rights in advance', 'Vooraf rechten geven', 'Attribuer des droits à l’avance'],
+    setInviteIntro: ['For someone who has no account yet. The right is applied automatically when they create their account with this e-mail. Also works for an address outside {d}.', 'Voor iemand die nog geen account heeft. Het recht wordt automatisch toegepast zodra die een account aanmaakt met dit e-mailadres. Werkt ook voor een adres buiten {d}.', 'Pour une personne sans compte. Le droit s’applique automatiquement à la création du compte avec cet e-mail. Fonctionne aussi pour une adresse hors {d}.'],
+    setInviteBtn: ['Add', 'Toevoegen', 'Ajouter'],
+    setInviteList: ['Waiting for account', 'Wachten op account', 'En attente de compte'],
+    setInviteNone: ['Nobody on the list.', 'Niemand op de lijst.', 'Personne dans la liste.'],
+    setInviteExists: ['This person already has an account – change the role in the list above.', 'Deze persoon heeft al een account – wijzig de rol in de lijst hierboven.', 'Cette personne a déjà un compte – modifiez le rôle dans la liste ci-dessus.'],
+    setInviteAdded: ['Added', 'Toegevoegd', 'Ajouté'],
+    setInvalidEmail: ['Enter a valid e-mail address.', 'Vul een geldig e-mailadres in.', 'Saisissez une adresse e-mail valide.'],
+    setRemove: ['Remove', 'Verwijderen', 'Retirer'],
+    setSaveError: ['Could not save. Check your internet connection.', 'Opslaan mislukt. Controleer je internetverbinding.', 'Échec de l’enregistrement. Vérifiez votre connexion.']
   };
 
   const KEY = 'edp-lang';
