@@ -113,15 +113,34 @@
   const safeName = s => String(s).replace(/[^a-z0-9_.-]+/gi, '_');
 
   /* Header: language switch + install button + service worker */
+  /* Install instructions for Android and iPhone (with a direct install button where the browser supports it) */
+  function showInstallHelp(getPrompt, clearPrompt) {
+    let m = document.getElementById('installModal');
+    if (m) m.remove();
+    const steps = (keys) => `<ol>${keys.map(k => `<li>${esc(t(k))}</li>`).join('')}</ol>`;
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent), canPrompt = !!(getPrompt && getPrompt());
+    m = document.createElement('div'); m.id = 'installModal'; m.className = 'modal';
+    m.innerHTML = `<div class="modal-card" role="dialog" aria-modal="true"><h2>${esc(t('instTitle'))}</h2><p class="muted">${esc(t('instIntro'))}</p>
+      ${canPrompt ? `<button type="button" class="primary full" id="instNow">${esc(t('instNow'))}</button>` : ''}
+      ${(() => { const a = `<div class="inst"><h3>🤖 ${esc(t('instAndroid'))}</h3>${steps(['instA1', 'instA2', 'instA3', 'instA4'])}</div>`, i = `<div class="inst"><h3>📱 ${esc(t('instIphone'))}</h3>${steps(['instI1', 'instI2', 'instI3', 'instI4'])}</div>`; return isIos ? i + a : a + i; })()}
+      <button type="button" class="secondary full" id="instClose">${esc(t('instClose'))}</button></div>`;
+    document.body.appendChild(m);
+    const close = () => m.remove();
+    m.onclick = e => { if (e.target === m) close(); };
+    m.querySelector('#instClose').onclick = close;
+    const now = m.querySelector('#instNow');
+    if (now) now.onclick = async () => { const p = getPrompt(); if (p) { p.prompt(); await p.userChoice; clearPrompt(); } close(); };
+  }
+
   function initShell() {
     const sw = document.getElementById('langSwitch'); if (sw) global.I18N.mountSwitch(sw);
     let deferred = null;
     const btn = document.getElementById('installBtn');
     global.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; });
-    if (btn) btn.onclick = async () => { if (deferred) { deferred.prompt(); await deferred.userChoice; deferred = null; } else toast(t('installHelp'), 4000); };
+    if (btn) btn.onclick = () => showInstallHelp(() => deferred, () => { deferred = null; });
     if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => {});
     global.I18N.apply();
   }
 
-  global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, VERSION: '4.3' };
+  global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, showInstallHelp, VERSION: '4.4' };
 })(window);
