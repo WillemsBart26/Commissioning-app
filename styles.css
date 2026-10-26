@@ -169,3 +169,12 @@ td.man{width:90px}
 .update-actions{display:flex;gap:8px}.update-actions button{flex:1;min-height:42px}
 .update-banner .primary{background:var(--accent);color:#06232a}.update-banner .secondary{background:#ffffff22;color:#fff}
 @keyframes updIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+/* VCA table fits on phones */
+@media(max-width:600px){
+  #tPeople td:first-child{min-width:0;overflow-wrap:anywhere}
+  #tPeople td,#tPeople th{padding:9px 5px}
+  #tPeople .prog{min-width:96px}
+  #tPeople .prog-top{flex-wrap:wrap;gap:4px}
+  #tPeople td.man{width:58px}
+  #tPeople .man-input{width:54px;padding:7px 4px}
+}
