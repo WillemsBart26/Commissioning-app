@@ -164,7 +164,7 @@
     let sec = null;
     state.checks.forEach(o => {
       const s = checkSection(o);
-      if (s !== sec) { sec = s; ensure(14); doc.text(s, M, y, 10, 'bold', C.a); y += 7; }
+      if (s !== sec) { sec = s; ensure(28); doc.text(s, M, y, 10, 'bold', C.a); y += 7; }
       const lbl = doc.wrap(checkText(o), 140, 9);
       ensure(lbl.length * 4 + 8);
       doc.line(M, y - 4, 195, y - 4, C.l, .25);

@@ -146,7 +146,7 @@
     state.questions.forEach(q => {
       const a = state.answers[q.id] || {};
       const s = qSection(q);
-      if (s !== sec) { sec = s; ensure(18); y += 3; doc.text(s.toUpperCase(), M, y, 10.5, 'bold', C.n); y += 8; }
+      if (s !== sec) { sec = s; ensure(32); y += 3; doc.text(s.toUpperCase(), M, y, 10.5, 'bold', C.n); y += 8; }
       const lbl = doc.wrap(qLabel(q), 140, 9);
       ensure(lbl.length * 4 + 8);
       doc.line(M, y - 4, 195, y - 4, C.l, .25);
