@@ -46,7 +46,7 @@
 
   /* ---------- Info ---------- */
   function renderInfo() {
-    $('#infoFields').innerHTML = FIELDS.map(([id, key, kind]) => `<label>${esc(t(key))}<input type="${kind}" data-save="${id}" value="${esc(state[id] || '')}"></label>`).join('');
+    $('#infoFields').innerHTML = FIELDS.map(([id, key, kind]) => `<label>${esc(t(key))}${id === 'project' ? ' *' : ''}<input type="${kind}" data-save="${id}" ${id === 'project' ? 'id="projectField" required' : ''} value="${esc(state[id] || '')}"></label>`).join('');
     $$('#infoFields [data-save]').forEach(el => el.oninput = el.onchange = () => { state[el.dataset.save] = el.value; save(); });
     $('#observations').value = state.observations || '';
   }
@@ -183,7 +183,15 @@
     return doc.output();
   }
   const pdfName = () => EDP.safeName(`SPAQUE_Inspection_${state.project || state.date || today()}.pdf`);
-  function makePdf() { try { return pdfBlob(); } catch (e) { console.error(e); toast(t('pdfFailed')); return null; } }
+  function makePdf() {
+    if (!(state.project || '').trim()) {
+      toast(t('projectRequired'), 3500);
+      $$('.tab,.panel').forEach(x => x.classList.remove('active')); $('[data-tab=info]').classList.add('active'); $('#info').classList.add('active');
+      const f = $('#projectField'); if (f) { f.classList.add('invalid'); f.focus(); }
+      return null;
+    }
+    try { return pdfBlob(); } catch (e) { console.error(e); toast(t('pdfFailed')); return null; }
+  }
   $('#pdfBtn').onclick = () => { const b = makePdf(); if (b) EDP.download(b, pdfName()); };
   $('#shareBtn').onclick = () => { const b = makePdf(); if (b) EDP.deliver(b, pdfName(), t('tileSpaqueTitle')).catch(e => { if (e && e.name !== 'AbortError') EDP.download(b, pdfName()); else toast(t('sharingCancelled')); }); };
   $('#resetBtn').onclick = () => {
@@ -198,4 +206,5 @@
   I18N.onChange(renderAll);
   renderAll();
   EDP.initShell();
+  EDPAuth.require().then(p => { if (p && p.full_name && !state.inspector) { state.inspector = p.full_name; save(); renderInfo(); } });
 })();

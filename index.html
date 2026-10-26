@@ -29,12 +29,14 @@
       <h1 data-i18n="appName">EDP Reports</h1>
       <p data-i18n="homeIntro">Choose a report, complete it on site and share a finished PDF.</p>
     </div>
+    <div id="userCard" class="card user-card hidden"></div>
     <div class="tiles">
       <button data-open="commissioning"><b>🔧</b><span><strong data-i18n="tileCommTitle">Commissioning Report</strong><small data-i18n="tileCommSub"></small></span></button>
       <button data-open="safety"><b>🦺</b><span><strong data-i18n="tileSafetyTitle">Site Safety Inspection</strong><small data-i18n="tileSafetySub"></small></span></button>
       <a href="spaque.html"><b>📋</b><span><strong data-i18n="tileSpaqueTitle">SPAQUE Inspection Report</strong><small data-i18n="tileSpaqueSub"></small></span></a>
+      <a id="dashTile" href="dashboard.html" class="hidden"><b>📊</b><span><strong data-i18n="dashTile">VCA overview</strong><small data-i18n="dashTileSub"></small></span></a>
     </div>
-    <p class="footer">EDP Reports v4.0</p>
+    <p class="footer">EDP Reports v4.1</p>
   </section>
 
   <section id="report" class="hidden">
@@ -68,6 +70,7 @@
 <div id="toast"></div>
 <script src="i18n.js"></script>
 <script src="common.js"></script>
+<script src="auth.js"></script>
 <script src="pdf-engine.js"></script>
 <script src="app.js"></script>
 </body>

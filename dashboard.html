@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#272e3b">
+<title>VCA – EDP Reports</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body style="padding-bottom:30px">
+<header class="app">
+  <a class="icon" href="index.html" data-i18n-title="back">←</a>
+  <img class="logo" src="assets/edp-logo.jpg" alt="EDP">
+  <div class="titles"><strong data-i18n="dashTile">VCA overview</strong><small id="saveStatus"></small></div>
+  <div id="langSwitch" class="lang-switch"></div>
+</header>
+<main>
+  <div class="report-head"><div><p class="eyebrow">VCA</p><h1 data-i18n="dashTitle">VCA overview</h1><p class="muted" id="dashIntro"></p></div></div>
+  <div id="noAccess" class="card hidden"><p data-i18n="dashNoAccess"></p></div>
+  <div id="dash" class="hidden">
+    <section class="card">
+      <div class="filters">
+        <label><span data-i18n="dashYear">Year</span><select id="yearSel"></select></label>
+        <label><span data-i18n="dashProject">Project</span><select id="projSel"></select></label>
+        <button class="secondary compact" id="refreshBtn" data-i18n="dashRefresh">Refresh</button>
+        <button class="secondary compact" id="csvBtn" data-i18n="dashExport">Export CSV</button>
+      </div>
+    </section>
+    <section class="kpis" style="margin-bottom:14px">
+      <div class="kpi"><b id="kTotal">–</b><span data-i18n="dashCount">Inspections</span></div>
+      <div class="kpi"><b id="kReached">–</b><span data-i18n="dashReachedKpi">Target reached</span></div>
+      <div class="kpi"><b id="kProjects">–</b><span data-i18n="dashProjects">Projects</span></div>
+    </section>
+    <section class="card"><h2 data-i18n="dashPerPerson">Per person</h2><p class="muted small" id="expected"></p><div class="table-wrap"><table class="data" id="tPeople"></table></div></section>
+    <section class="card"><h2 data-i18n="dashPerProject">Per project</h2><div class="table-wrap"><table class="data" id="tProjects"></table></div></section>
+    <section class="card"><h2 data-i18n="dashReports">All inspections</h2><div class="table-wrap"><table class="data" id="tReports"></table></div></section>
+  </div>
+</main>
+<div id="toast"></div>
+<script src="i18n.js"></script>
+<script src="common.js"></script>
+<script src="auth.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /* EDP Reports service worker - bump CACHE on every release so phones pick up the update */
-const CACHE = 'edp-reports-v4-0';
-const ASSETS = ['./', './index.html', './spaque.html', './styles.css', './i18n.js', './common.js', './pdf-engine.js', './app.js', './spaque.js', './manifest.webmanifest',
+const CACHE = 'edp-reports-v4-1';
+const ASSETS = ['./', './index.html', './spaque.html', './styles.css', './i18n.js', './common.js', './pdf-engine.js', './app.js', './spaque.js', './auth.js', './dashboard.html', './dashboard.js', './manifest.webmanifest',
   './assets/edp-logo.jpg', './assets/icon-192.png', './assets/icon-512.png', './assets/tech-ref.jpg',
   './assets/ref-1.jpg', './assets/ref-2.jpg', './assets/ref-3.jpg', './assets/ref-4.jpg'];
 self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())));

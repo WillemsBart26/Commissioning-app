@@ -8,7 +8,7 @@
     commissioning: {
       titleKey: 'tileCommTitle', eyebrowKey: 'commEyebrow', storage: 'enerdeal-v3-commissioning', file: 'Commissioning_Report',
       statuses: ['Pass', 'Fail', 'N/A'], bad: 'Fail',
-      details: [['company', 'f_company', 'text'], ['reportNo', 'f_reportNo', 'text'], ['client', 'f_client', 'text'], ['date', 'f_commDate', 'date'], ['site', 'f_site', 'text'], ['technician', 'f_technician', 'text'], ['address', 'f_address', 'text'], ['equipment', 'f_equipment', 'text']],
+      details: [['company', 'f_company', 'text'], ['project', 'f_project', 'text'], ['reportNo', 'f_reportNo', 'text'], ['client', 'f_client', 'text'], ['date', 'f_commDate', 'date'], ['site', 'f_site', 'text'], ['technician', 'f_technician', 'text'], ['address', 'f_address', 'text'], ['equipment', 'f_equipment', 'text']],
       completion: [['finalStatus', 'f_finalStatus', 'select'], ['signoff', 'f_signoff', 'text'], ['clientSignoff', 'f_clientSignoff', 'text']],
       sections: [['commSection', ['cq1', 'cq2', 'cq3', 'cq4', 'cq5', 'cq6', 'cq7', 'cq8', 'cq9', 'cq10']]]
     },
@@ -26,7 +26,7 @@
   };
   const FINAL = ['Passed', 'Passed with remarks', 'Failed'];
 
-  let type = null, state = null, edit = false, logo = null;
+  let type = null, state = null, edit = false, logo = null, me = null;
   EDP.imageData('assets/edp-logo.jpg').then(d => { logo = d; });
 
   const qLabel = q => q.label || t(q.key);
@@ -35,11 +35,13 @@
   function defaults(tp) {
     const m = modules[tp];
     const questions = m.sections.flatMap(([sectionKey, keys]) => keys.map(key => ({ id: uid(), key, sectionKey, photosEnabled: true })));
-    return { values: { company: 'EDP', date: today() }, questions, answers: {}, generalNotes: '', generalPhotos: [] };
+    const values = { company: 'EDP', date: today() };
+    if (me && me.full_name) { if (tp === 'safety') values.inspector = me.full_name; else values.technician = me.full_name; }
+    return { reportId: uid(), values, questions, answers: {}, generalNotes: '', generalPhotos: [] };
   }
   /* Older drafts stored English text; link them to translation keys so they follow the chosen language. */
   function migrate(s, tp) {
-    s.values ??= {}; s.answers ??= {}; s.generalPhotos ??= [];
+    s.values ??= {}; s.answers ??= {}; s.generalPhotos ??= []; s.reportId ??= uid();
     if (!Array.isArray(s.questions) || !s.questions.length) s.questions = defaults(tp).questions;
     const qp = tp === 'safety' ? 'sq' : 'cq';
     s.questions.forEach(q => {
@@ -62,7 +64,7 @@
 
   function field([id, key, kind], host) {
     const l = document.createElement('label');
-    l.append(t(key));
+    l.append(t(key) + (id === 'project' ? ' *' : ''));
     let x;
     if (kind === 'select') {
       x = document.createElement('select');
@@ -71,6 +73,7 @@
     } else if (kind === 'textarea') { x = document.createElement('textarea'); x.rows = 3; }
     else { x = document.createElement('input'); x.type = kind; }
     x.value = state.values[id] || '';
+    if (id === 'project') { x.required = true; x.id = 'projectField'; }
     x.oninput = x.onchange = () => { state.values[id] = x.value; save(); };
     l.appendChild(x); host.appendChild(l);
   }
@@ -162,7 +165,46 @@
     return doc.output();
   }
   const filename = () => EDP.safeName(`${modules[type].file}_${state.values.project || state.values.reportNo || state.values.site || today()}.pdf`);
-  function makePdf() { try { return pdf(); } catch (e) { console.error(e); toast(t('pdfFailed')); return null; } }
+  function checkProject() {
+    if ((state.values.project || '').trim()) return true;
+    toast(t('projectRequired'), 3500);
+    const f = $('#projectField'); if (f) { f.classList.add('invalid'); f.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => f.focus(), 300); }
+    return false;
+  }
+  /* Site Safety Inspections count for the VCA target: register them (queued when offline). */
+  function register() {
+    if (type !== 'safety') return;
+    const m = modules[type], c = { OK: 0, NOK: 0, 'N/A': 0, '': 0 };
+    state.questions.forEach(q => { c[(state.answers[q.id] || {}).status || ''] += 1; });
+    EDPAuth.queueReport({ id: state.reportId, module: 'safety', project: state.values.project.trim(), location: state.values.location || null,
+      report_date: state.values.date || today(), ok_count: c.OK, nok_count: c.NOK, na_count: c['N/A'], open_count: c[''], lang: I18N.lang })
+      .then(r => { toast(r && r.pending ? t('registeredOffline') : t('registered')); renderUserCard(); });
+  }
+  function makePdf() {
+    if (!checkProject()) return null;
+    let b = null;
+    try { b = pdf(); } catch (e) { console.error(e); toast(t('pdfFailed')); return null; }
+    register(); return b;
+  }
+
+  /* Home: who is signed in + own VCA progress */
+  async function renderUserCard() {
+    const card = $('#userCard'); if (!me) return;
+    const y = new Date().getFullYear(), target = EDPAuth.CONFIG.target;
+    let n = null;
+    try {
+      const rows = await EDPAuth.rest(`reports?select=id&module=eq.safety&user_id=eq.${me.id}&report_date=gte.${y}-01-01&report_date=lte.${y}-12-31`);
+      n = rows.length; try { localStorage.setItem('edp-vca-count', JSON.stringify({ y, n })); } catch (e) {}
+    } catch (e) { try { const c = JSON.parse(localStorage.getItem('edp-vca-count')); if (c && c.y === y) n = c.n; } catch (x) {} }
+    const pend = EDPAuth.pending(), total = (n || 0) + pend, pct = Math.min(100, Math.round(total / target * 100));
+    card.innerHTML = `<div class="user-row"><span>${esc(t('signedInAs', { n: me.full_name || me.email }))}</span><button type="button" class="secondary compact" id="signOutBtn">${esc(t('signOut'))}</button></div>
+      <div class="vca"><div class="vca-head"><strong>${esc(t('myVca', { y }))}</strong><span>${esc(t('vcaOf', { n: n == null ? '…' : total, t: target }))}</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <small class="muted">${esc(total >= target ? t('vcaDone') : t('vcaToGo', { n: target - total }))}${pend ? ' · ' + esc(t('syncPending', { n: pend })) : ''}</small></div>`;
+    card.classList.remove('hidden');
+    $('#signOutBtn').onclick = async () => { if (confirm(t('confirmSignOut'))) { await EDPAuth.signOut(); location.reload(); } };
+    $('#dashTile').classList.toggle('hidden', !(me.role === 'supervisor' || me.role === 'admin'));
+  }
 
   /* Events */
   document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => load(b.dataset.open));
@@ -180,6 +222,8 @@
   $('#downloadBtn').onclick = () => { const b = makePdf(); if (b) EDP.download(b, filename()); };
   $('#shareBtn').onclick = () => { const b = makePdf(); if (b) EDP.deliver(b, filename(), t(modules[type].titleKey)).catch(e => { if (e && e.name !== 'AbortError') EDP.download(b, filename()); else toast(t('sharingCancelled')); }); };
 
-  I18N.onChange(() => { if (type) render(); else $('#appTitle').textContent = t('appName'); });
+  I18N.onChange(() => { if (type) render(); else $('#appTitle').textContent = t('appName'); renderUserCard(); });
   EDP.initShell();
+  EDPAuth.require().then(p => { me = p; renderUserCard(); });
+  window.addEventListener('online', () => EDPAuth.flush().then(renderUserCard));
 })();
