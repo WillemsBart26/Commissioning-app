@@ -1,4 +1,4 @@
-# EDP Reports v4.3
+# EDP Reports v4.5
 
 Installable, offline-first web app (PWA) for field reports, in **English, Nederlands and Français**:
 
@@ -39,7 +39,12 @@ The app opens in the phone's language (NL / FR / EN, otherwise English). Switch 
 Upload the complete folder (keep `assets/` with it) to an HTTPS host, e.g. GitHub Pages. Open the link once while online, then install via the browser menu ("Install app" / "Add to Home Screen").
 
 ## Releasing an update
-Change `CACHE` in `sw.js` (e.g. `edp-reports-v4-2`) every time you publish, so installed phones download the new files.
+Raise the version number in **three places** (same number everywhere), then publish:
+1. `common.js` – `const VERSION = '4.6';`
+2. `sw.js` – `const VERSION = '4.6';`
+3. `version.json` – `"version": "4.6"` plus a few short lines per language under `notes` (what's new).
+
+Everyone who opens the app (or brings it back to the front) gets a banner *"New version 4.6 available – Update now"*. After updating they see once *"Updated to version 4.6 – what's new"* with your notes. The app fetches pages and code network-first, so page and code always match; offline it uses the last saved copy.
 
 ## Data
 Drafts and photos are stored only on the device (browser storage, about 5 MB). Photos are reduced to max. 1280 px JPEG. If storage is full the app shows a clear warning instead of silently losing data.

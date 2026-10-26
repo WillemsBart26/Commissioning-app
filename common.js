@@ -132,6 +132,55 @@
     if (now) now.onclick = async () => { const p = getPrompt(); if (p) { p.prompt(); await p.userChoice; clearPrompt(); } close(); };
   }
 
+  /* ---------- Updates ----------
+     On every start (and when the app comes back to the front) the app asks the server which version is current.
+     Newer version -> banner "New version available – Update". After updating -> one-time "What's new" notice. */
+  const cmpVer = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < Math.max(x.length, y.length); i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d; } return 0; };
+  const pickNotes = n => (n && (n[global.I18N.lang] || n.en)) || [];
+  function banner(html, cls) {
+    let b = document.getElementById('updateBanner'); if (b) b.remove();
+    b = document.createElement('div'); b.id = 'updateBanner'; b.className = 'update-banner ' + (cls || ''); b.innerHTML = html;
+    document.body.appendChild(b); return b;
+  }
+  async function checkForUpdate() {
+    if (!navigator.onLine || document.body.classList.contains('gated')) return;
+    try {
+      const v = await (await fetch('version.json?t=' + Date.now(), { cache: 'no-store' })).json();
+      if (cmpVer(v.version, VERSION) > 0) {
+        const notes = pickNotes(v.notes);
+        const b = banner(`<div><strong>${esc(t('updAvailable', { v: v.version }))}</strong>${notes.length ? `<ul>${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}</div><div class="update-actions"><button type="button" class="primary" id="updNow">${esc(t('updNow'))}</button><button type="button" class="secondary" id="updLater">${esc(t('updLater'))}</button></div>`);
+        b.querySelector('#updLater').onclick = () => b.remove();
+        b.querySelector('#updNow').onclick = () => applyUpdate(b);
+      }
+    } catch (e) {}
+  }
+  async function applyUpdate(b) {
+    b.querySelector('#updNow').disabled = true; b.querySelector('#updNow').textContent = t('updBusy');
+    try {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) {
+        await reg.update();
+        await new Promise(res => { const done = () => res(); navigator.serviceWorker.addEventListener('controllerchange', done, { once: true }); setTimeout(done, 6000); });
+      }
+    } catch (e) {}
+    location.reload();
+  }
+  function showWhatsNew() {
+    let seen = null; try { seen = localStorage.getItem('edp-seen-version'); localStorage.setItem('edp-seen-version', VERSION); } catch (e) { return; }
+    if (!seen || seen === VERSION) return; /* first install: nothing to announce */
+    fetch('version.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.json()).catch(() => null).then(v => {
+      const notes = v && v.version === VERSION ? pickNotes(v.notes) : [];
+      const b = banner(`<div><strong>${esc(t('updDone', { v: VERSION }))}</strong>${notes.length ? `<ul>${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}</div><div class="update-actions"><button type="button" class="primary" id="updOk">OK</button></div>`, 'done');
+      b.querySelector('#updOk').onclick = () => b.remove();
+    });
+  }
+  function initUpdates() {
+    showWhatsNew();
+    setTimeout(checkForUpdate, 1500);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForUpdate(); });
+    global.addEventListener('online', checkForUpdate);
+  }
+
   function initShell() {
     const sw = document.getElementById('langSwitch'); if (sw) global.I18N.mountSwitch(sw);
     let deferred = null;
@@ -139,8 +188,10 @@
     global.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; });
     if (btn) btn.onclick = () => showInstallHelp(() => deferred, () => { deferred = null; });
     if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => {});
+    initUpdates();
     global.I18N.apply();
   }
 
-  global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, showInstallHelp, VERSION: '4.4' };
+  const VERSION = '4.5';
+  global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, showInstallHelp, checkForUpdate, VERSION };
 })(window);

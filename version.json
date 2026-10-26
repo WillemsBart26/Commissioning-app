@@ -1,0 +1,9 @@
+{
+  "version": "4.5",
+  "date": "2026-10-26",
+  "notes": {
+    "nl": ["Melding bij elke nieuwe versie van de app", "Installatiehulp voor Android en iPhone (knop ↓)", "Inspecties buiten de app tellen mee voor VCA"],
+    "fr": ["Notification à chaque nouvelle version de l’app", "Aide à l’installation pour Android et iPhone (bouton ↓)", "Les inspections hors app comptent pour le VCA"],
+    "en": ["Notice for every new version of the app", "Install help for Android and iPhone (↓ button)", "Inspections outside the app count towards VCA"]
+  }
+}
