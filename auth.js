@@ -119,7 +119,9 @@
     if (/failed to fetch|network/i.test(m)) return t('authErrOffline');
     return m;
   }
-  function showGate(mode, resolve) {
+  let gateState = null;
+  function showGate(mode, resolve, opts = {}) {
+    gateState = { mode, resolve, opts };
     let el = document.getElementById('gate');
     if (!el) { el = document.createElement('div'); el.id = 'gate'; document.body.appendChild(el); }
     document.body.classList.add('gated');
@@ -128,6 +130,8 @@
     el.querySelectorAll('[data-mode]').forEach(a => a.onclick = ev => { ev.preventDefault(); showGate(a.dataset.mode, resolve); });
     const msg = (s, ok) => { const m = el.querySelector('#gateMsg'); m.textContent = s; m.classList.toggle('ok', !!ok); };
     const v = id => (el.querySelector('#' + id) || {}).value || '';
+    if (opts.email && el.querySelector('#gEmail')) el.querySelector('#gEmail').value = opts.email;
+    if (opts.msgKey) { msg(t(opts.msgKey), true); if (mode === 'login') { const pw = el.querySelector('#gPass'); if (pw) pw.focus(); } }
     el.querySelector('#gateForm').onsubmit = async ev => {
       ev.preventDefault();
       const btn = el.querySelector('button[type=submit]'); btn.disabled = true;
@@ -139,15 +143,15 @@
           if (v('gPass').length < 8) throw new Error(t('authErrPassword'));
           const d = await signUp(v('gEmail'), v('gPass'), v('gName'));
           if (d && d.access_token) { storeSession(d); hideGate(); resolve(await profile(true)); }
-          else msg(t('authCheckMail'), true);
-        } else if (mode === 'forgot') { await recover(v('gEmail')); msg(t('authResetSent'), true); }
+          else { showGate('login', resolve, { email: v('gEmail').trim().toLowerCase(), msgKey: 'authCheckMail' }); return; }
+        } else if (mode === 'forgot') { await recover(v('gEmail')); showGate('login', resolve, { email: v('gEmail').trim().toLowerCase(), msgKey: 'authResetSent' }); return; }
         else if (mode === 'newpass') { if (v('gPass').length < 8) throw new Error(t('authErrPassword')); await setPassword(v('gPass')); hideGate(); resolve(await profile(true)); }
       } catch (e) { msg(errText(e)); }
       btn.disabled = false;
     };
-    global.I18N.onChange(() => { if (document.body.classList.contains('gated')) showGate(mode, resolve); });
   }
-  function hideGate() { const el = document.getElementById('gate'); if (el) el.remove(); document.body.classList.remove('gated'); }
+  global.I18N.onChange(() => { if (gateState && document.body.classList.contains('gated')) showGate(gateState.mode, gateState.resolve, gateState.opts); });
+  function hideGate() { gateState = null; const el = document.getElementById('gate'); if (el) el.remove(); document.body.classList.remove('gated'); }
 
   /* Handle the links from confirmation / password-reset e-mails (#access_token=...&type=...) */
   function consumeHash() {

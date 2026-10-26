@@ -266,7 +266,7 @@
     authNewPassword: ['Choose a new password', 'Kies een nieuw wachtwoord', 'Choisissez un nouveau mot de passe'],
     authSave: ['Save', 'Opslaan', 'Enregistrer'],
     authDomainHint: ['Only {d} work e-mail addresses can create an account.', 'Alleen werk-e-mailadressen op {d} kunnen een account aanmaken.', 'Seules les adresses professionnelles {d} peuvent créer un compte.'],
-    authCheckMail: ['Account created. Open the confirmation e-mail we sent you, then sign in.', 'Account aangemaakt. Open de bevestigingsmail die we je stuurden en meld je daarna aan.', 'Compte créé. Ouvrez l’e-mail de confirmation envoyé, puis connectez-vous.'],
+    authCheckMail: ['Account created ✓ Open the confirmation e-mail we sent you (check spam too), then sign in here.', 'Account aangemaakt ✓ Open de bevestigingsmail die we je stuurden (kijk ook bij spam) en meld je daarna hier aan.', 'Compte créé ✓ Ouvrez l’e-mail de confirmation envoyé (vérifiez aussi les spams), puis connectez-vous ici.'],
     authResetSent: ['If this address has an account, a reset link is on its way.', 'Als dit adres een account heeft, is er een herstellink onderweg.', 'Si cette adresse a un compte, un lien de réinitialisation a été envoyé.'],
     authErrCredentials: ['Wrong e-mail or password.', 'Verkeerd e-mailadres of wachtwoord.', 'E-mail ou mot de passe incorrect.'],
     authErrNotConfirmed: ['Please confirm your e-mail address first (check your inbox).', 'Bevestig eerst je e-mailadres (kijk in je mailbox).', 'Veuillez d’abord confirmer votre adresse e-mail (vérifiez votre boîte).'],
