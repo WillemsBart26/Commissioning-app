@@ -133,6 +133,7 @@
     if (/database error|edp\.com/i.test(m)) return t('authDomainHint', { d: CONFIG.domain });
     if (/password/i.test(m) && /least|short|weak/i.test(m)) return t('authErrPassword');
     if (/failed to fetch|network/i.test(m)) return t('authErrOffline');
+    if (/rate limit|over_email_send_rate_limit|429/i.test(m)) return t('authErrRate');
     return m;
   }
   let gateState = null;
@@ -190,7 +191,7 @@
       if (h && h.type === 'recovery' && s) { showGate('newpass', resolve); return; }
       if (s && s.user) { flush(); resolve(await profile()); return; }
       showGate('login', resolve);
-      if (h && h.error) { const m = document.getElementById('gateMsg'); if (m) m.textContent = h.error; }
+      if (h && h.error) { const m = document.getElementById('gateMsg'); if (m) { m.textContent = /expired|invalid|otp/i.test(h.error) ? t('authLinkUsed') : h.error; m.classList.toggle('ok', /expired|invalid|otp/i.test(h.error)); } }
     });
   }
 

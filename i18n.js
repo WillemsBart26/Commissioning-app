@@ -294,6 +294,8 @@
     authErrPassword: ['The password needs at least 8 characters.', 'Het wachtwoord moet minstens 8 tekens hebben.', 'Le mot de passe doit contenir au moins 8 caractères.'],
     authErrName: ['Please enter your name.', 'Vul je naam in.', 'Veuillez saisir votre nom.'],
     authErrOffline: ['No internet connection. You need to be online to sign in the first time.', 'Geen internetverbinding. De eerste keer aanmelden moet online.', 'Pas de connexion Internet. La première connexion doit se faire en ligne.'],
+    authErrRate: ['Too many sign-ups at the same time. Please try again in about an hour, or ask the administrator.', 'Te veel aanmeldingen tegelijk. Probeer het over een uurtje opnieuw, of vraag het aan de beheerder.', 'Trop d’inscriptions en même temps. Réessayez dans une heure environ, ou contactez l’administrateur.'],
+    authLinkUsed: ['This e-mail link was already used – your account is probably confirmed. Just sign in below.', 'Deze e-maillink is al gebruikt – je account is waarschijnlijk al bevestigd. Meld je hieronder gewoon aan.', 'Ce lien a déjà été utilisé – votre compte est probablement confirmé. Connectez-vous ci-dessous.'],
     signOut: ['Sign out', 'Afmelden', 'Se déconnecter'],
     confirmSignOut: ['Sign out? Drafts stay on this device.', 'Afmelden? Concepten blijven op dit toestel.', 'Se déconnecter ? Les brouillons restent sur cet appareil.'],
     signedInAs: ['Signed in as {n}', 'Aangemeld als {n}', 'Connecté : {n}'],

@@ -1,9 +1,9 @@
 {
-  "version": "4.5",
-  "date": "2026-10-26",
+  "version": "4.6",
+  "date": "2026-10-27",
   "notes": {
-    "nl": ["Melding bij elke nieuwe versie van de app", "Installatiehulp voor Android en iPhone (knop ↓)", "Inspecties buiten de app tellen mee voor VCA"],
-    "fr": ["Notification à chaque nouvelle version de l’app", "Aide à l’installation pour Android et iPhone (bouton ↓)", "Les inspections hors app comptent pour le VCA"],
-    "en": ["Notice for every new version of the app", "Install help for Android and iPhone (↓ button)", "Inspections outside the app count towards VCA"]
+    "nl": ["Duidelijkere meldingen bij aanmelden en bevestigingslink"],
+    "fr": ["Messages plus clairs lors de l’inscription et du lien de confirmation"],
+    "en": ["Clearer messages when signing up and for the confirmation link"]
   }
 }
