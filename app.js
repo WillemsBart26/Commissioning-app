@@ -90,6 +90,8 @@
     $('#generalNotes').value = state.generalNotes || '';
     renderQuestions();
     renderGeneralPhotos();
+    $('#generalPick').innerHTML = EDP.photoPicker();
+    EDP.bindPicker($('#generalPick'), async files => { state.generalPhotos.push(...(await EDP.readPhotos(files)).map(p => ({ data: p.data, caption: '' }))); save(); renderGeneralPhotos(); });
   }
   function renderGeneralPhotos() { renderPhotos(state.generalPhotos, $('#generalPhotoGrid'), () => { save(); renderGeneralPhotos(); }); }
 
@@ -106,11 +108,11 @@
       box.innerHTML = `<div class="qtop"><strong>${esc(qLabel(q))}</strong><div class="qtools ${edit ? '' : 'hidden'}"><button type="button" data-rename title="${esc(t('rename'))}">✎</button><button type="button" data-photo title="${esc(t('togglePhotos'))}">${q.photosEnabled ? '📷' : '🚫'}</button><button type="button" data-delete title="${esc(t('del'))}">×</button></div></div>
         <div class="status">${m.statuses.map(v => `<button type="button" data-v="${v}" class="${a.status === v ? 'sel ' + (v === m.bad ? 'nok' : v === 'N/A' ? 'na' : 'ok') : ''}">${esc(t('st_' + v))}</button>`).join('')}</div>
         <textarea class="qremark" rows="2" placeholder="${esc(t('remarkPh'))}">${esc(a.remark)}</textarea>
-        <label class="photoAdd ${q.photosEnabled ? '' : 'hidden'}"><span>${esc(t('addPhoto'))}</span><input type="file" accept="image/*" multiple></label>
+        ${EDP.photoPicker(q.photosEnabled ? '' : 'hidden')}
         <div class="photos"></div>`;
       box.querySelectorAll('.status button').forEach(b => b.onclick = () => { a.status = a.status === b.dataset.v ? '' : b.dataset.v; save(); renderQuestions(); });
       box.querySelector('.qremark').oninput = e => { a.remark = e.target.value; save(); };
-      box.querySelector('input[type=file]').onchange = async e => { a.photos.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ data: p.data, caption: '' }))); e.target.value = ''; save(); renderQuestions(); };
+      EDP.bindPicker(box, async files => { a.photos.push(...(await EDP.readPhotos(files)).map(p => ({ data: p.data, caption: '' }))); save(); renderQuestions(); });
       const ph = box.querySelector('.photos'), redraw = () => { save(); renderPhotos(a.photos, ph, redraw); };
       renderPhotos(a.photos, ph, redraw);
       box.querySelector('[data-rename]').onclick = () => { const x = prompt(t('questionName'), qLabel(q)); if (x !== null && x.trim()) { q.label = x.trim(); save(); renderQuestions(); } };
@@ -221,7 +223,6 @@
   $('#editBtn').onclick = () => { edit = !edit; $('#addQuestionBtn').classList.toggle('hidden', !edit); $('#editBtn').textContent = edit ? t('done') : t('editChecklist'); renderQuestions(); };
   $('#addQuestionBtn').onclick = () => { const label = prompt(t('questionName'), t('newQuestion')); if (label && label.trim()) { state.questions.push({ id: uid(), sectionKey: 'customQuestions', label: label.trim(), photosEnabled: true }); save(); renderQuestions(); } };
   $('#generalNotes').oninput = e => { state.generalNotes = e.target.value; save(); };
-  $('#generalPhotos').onchange = async e => { state.generalPhotos.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ data: p.data, caption: '' }))); e.target.value = ''; save(); render(); };
   $('#newBtn').onclick = () => { if (confirm(t('confirmNew'))) { const qs = structuredClone(state.questions); state = defaults(type); state.questions = qs; save(); render(); } };
   $('#downloadBtn').onclick = () => { const b = makePdf(); if (b) EDP.download(b, filename()); };
   $('#shareBtn').onclick = () => { const b = makePdf(); if (b) EDP.deliver(b, filename(), t(modules[type].titleKey)).catch(e => { if (e && e.name !== 'AbortError') EDP.download(b, filename()); else toast(t('sharingCancelled')); }); };

@@ -178,3 +178,7 @@ td.man{width:90px}
   #tPeople td.man{width:58px}
   #tPeople .man-input{width:54px;padding:7px 4px}
 }
+
+/* Photo: take or pick */
+.photo-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.photo-pick .photoAdd{margin-top:0;padding:0 6px;text-align:center;font-size:14px}

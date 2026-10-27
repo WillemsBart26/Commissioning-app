@@ -181,6 +181,15 @@
     global.addEventListener('online', checkForUpdate);
   }
 
+  /* Two photo buttons: take a photo with the camera, or pick existing photos from the gallery */
+  function photoPicker(cls = '', galCls = '') {
+    return `<div class="photo-pick ${cls}"><label class="photoAdd"><span>${esc(t('photoTake'))}</span><input type="file" accept="image/*" capture="environment" class="cam-in"></label>` +
+      `<label class="photoAdd"><span>${esc(t('photoGallery'))}</span><input type="file" accept="image/*" multiple class="gal-in ${galCls}"></label></div>`;
+  }
+  function bindPicker(root, handler) {
+    root.querySelectorAll('.photo-pick input[type=file]').forEach(inp => inp.onchange = async e => { const f = [...e.target.files]; e.target.value = ''; if (f.length) await handler(f); });
+  }
+
   function initShell() {
     const sw = document.getElementById('langSwitch'); if (sw) global.I18N.mountSwitch(sw);
     let deferred = null;
@@ -192,6 +201,6 @@
     global.I18N.apply();
   }
 
-  const VERSION = '4.6';
-  global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, showInstallHelp, checkForUpdate, VERSION };
+  const VERSION = '4.7';
+  global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, showInstallHelp, photoPicker, bindPicker, checkForUpdate, VERSION };
 })(window);

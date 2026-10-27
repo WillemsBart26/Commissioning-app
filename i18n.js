@@ -54,6 +54,8 @@
     downloadPdf: ['Download PDF', 'PDF downloaden', 'Télécharger PDF'],
     sendPdf: ['Send PDF ↗', 'PDF versturen ↗', 'Envoyer PDF ↗'],
     remarkPh: ['Remarks / action required', 'Opmerking / vereiste actie', 'Remarque / action requise'],
+    photoTake: ['📷 Take photo', '📷 Foto nemen', '📷 Prendre une photo'],
+    photoGallery: ['🖼️ From gallery', '🖼️ Uit galerij', '🖼️ Depuis la galerie'],
     addPhoto: ['＋ Add photo', '＋ Foto toevoegen', '＋ Ajouter une photo'],
     caption: ['Caption', 'Bijschrift', 'Légende'],
     photoAdded: ['Photo added', 'Foto toegevoegd', 'Photo ajoutée'],

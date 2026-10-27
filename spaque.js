@@ -68,12 +68,12 @@
         <img class="assembly-ref" src="${g.image}" alt="${esc(groupTitle(g))}">
         <ul class="parts-summary">${g.parts.map(n => `<li><strong>${n}</strong> · ${esc(partName(n))}</li>`).join('')}</ul>
         <div class="group-count">${esc(t('spPhotoCount', { n: photos.length }))}</div>
-        <label class="photoAdd"><span>${esc(t('spAddPhotos'))}</span><input class="group-input" type="file" accept="image/*" multiple></label>
+        ${EDP.photoPicker('', 'group-input')}
         <div class="photos">${photos.map((p, i) => `<div class="photo" data-index="${i}"><img src="${p.photo}" alt="${esc(t('spSitePhoto', { n: i + 1 }))}"><button type="button" class="x" title="${esc(t('removePhoto'))}">×</button><textarea rows="2" placeholder="${esc(t('spPhotoNote', { n: i + 1 }))}">${esc(p.note)}</textarea></div>`).join('')}</div></section>`;
     }).join('');
     $$('#partGroups .assembly-group').forEach(sec => {
       const photos = state.groupPhotos[sec.dataset.group];
-      sec.querySelector('.group-input').onchange = async e => { photos.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ photo: p.data, note: '' }))); save(); renderParts(); };
+      EDP.bindPicker(sec, async files => { photos.push(...(await EDP.readPhotos(files)).map(p => ({ photo: p.data, note: '' }))); save(); renderParts(); });
       sec.querySelectorAll('.photo').forEach(card => {
         const i = Number(card.dataset.index);
         card.querySelector('textarea').oninput = e => { photos[i].note = e.target.value; save(); };
@@ -93,7 +93,7 @@
         <div class="rowtop"><span class="title editable" contenteditable="${editMode}">${esc(checkText(o))}</span>${editMode ? `<div class="qtools">${o.text && o.key ? `<button type="button" class="reset" title="${esc(t('resetText'))}">↺</button>` : ''}<button type="button" class="del" title="${esc(t('del'))}">×</button></div>` : ''}</div>
         <div class="status">${['OK', 'NOK', 'N/A'].map(v => `<button type="button" data-v="${v}" class="${o.status === v ? 'sel ' + (v === 'OK' ? 'ok' : v === 'NOK' ? 'nok' : 'na') : ''}">${esc(t('st_' + v))}</button>`).join('')}</div>
         <textarea rows="2" placeholder="${esc(t('spRemark'))}">${esc(o.note)}</textarea>
-        <label class="photoAdd"><span>${esc(t('addPhoto'))}</span><input type="file" accept="image/*" multiple></label>
+        ${EDP.photoPicker()}
         <div class="photos">${o.photos.map((p, i) => `<div class="photo" data-index="${i}"><img src="${p.data}" alt=""><button type="button" class="x" title="${esc(t('removePhoto'))}">×</button></div>`).join('')}</div></div>`;
     });
     $('#checkList').innerHTML = h;
@@ -103,7 +103,7 @@
       c.querySelector('textarea').oninput = e => { o.note = e.target.value; save(); };
       const ed = c.querySelector('.editable');
       ed.oninput = () => { const v = ed.innerText.trim(); if (v && v !== t(o.key)) o.text = v; else delete o.text; save(); };
-      c.querySelector('input[type=file]').onchange = async e => { o.photos.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ data: p.data }))); save(); renderChecks(); };
+      EDP.bindPicker(c, async files => { o.photos.push(...(await EDP.readPhotos(files)).map(p => ({ data: p.data }))); save(); renderChecks(); });
       c.querySelectorAll('.photo').forEach(p => p.querySelector('.x').onclick = () => { o.photos.splice(Number(p.dataset.index), 1); save(); renderChecks(); });
       const r = c.querySelector('.reset'); if (r) r.onclick = () => { delete o.text; save(); renderChecks(); };
       const d = c.querySelector('.del'); if (d) d.onclick = () => { if (confirm(t('deleteQuestion'))) { state.checks = state.checks.filter(x => x !== o); save(); renderChecks(); } };
@@ -137,7 +137,7 @@
       const d = c.querySelector('.del'); if (d) d.onclick = () => { state.extra = state.extra.filter(o => o !== x.obj); save(); renderOverview(); };
     });
   }
-  $('#extraPhoto').onchange = async e => { state.extra.push(...(await EDP.readPhotos(e.target.files)).map(p => ({ id: uid(), photo: p.data, note: '' }))); e.target.value = ''; save(); renderOverview(); };
+  function renderExtraPick() { $('#extraPick').innerHTML = EDP.photoPicker('', 'extra-in'); EDP.bindPicker($('#extraPick'), async files => { state.extra.push(...(await EDP.readPhotos(files)).map(p => ({ id: uid(), photo: p.data, note: '' }))); save(); renderOverview(); }); }
 
   /* ---------- PDF ---------- */
   function pdfBlob() {
@@ -202,7 +202,7 @@
     save(); renderAll();
   };
 
-  function renderAll() { renderInfo(); renderParts(); renderChecks(); renderOverview(); $('#editToggle').textContent = editMode ? t('done') : t('spEditFields'); }
+  function renderAll() { renderInfo(); renderParts(); renderChecks(); renderOverview(); renderExtraPick(); $('#editToggle').textContent = editMode ? t('done') : t('spEditFields'); }
   I18N.onChange(renderAll);
   renderAll();
   EDP.initShell();

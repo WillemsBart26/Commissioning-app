@@ -1,6 +1,6 @@
 /* EDP Reports service worker.
    On every release: raise VERSION here, in common.js and in version.json (see README). */
-const VERSION = '4.6';
+const VERSION = '4.7';
 const CACHE = 'edp-reports-v' + VERSION;
 const ASSETS = ['./', './index.html', './spaque.html', './styles.css', './i18n.js', './common.js', './pdf-engine.js', './app.js', './spaque.js', './auth.js', './dashboard.html', './dashboard.js', './settings.html', './settings.js', './manifest.webmanifest',
   './assets/edp-logo.jpg', './assets/icon-192.png', './assets/icon-512.png', './assets/tech-ref.jpg',
