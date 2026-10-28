@@ -182,3 +182,7 @@ td.man{width:90px}
 /* Photo: take or pick */
 .photo-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .photo-pick .photoAdd{margin-top:0;padding:0 6px;text-align:center;font-size:14px}
+
+/* Personal VCA target */
+.target-field{flex-direction:row;align-items:center;gap:8px;font-size:12px;margin-top:4px;white-space:nowrap}
+.target-field input{width:70px;padding:7px;text-align:center;font-weight:800;font-size:15px}

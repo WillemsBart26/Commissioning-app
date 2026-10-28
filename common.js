@@ -201,6 +201,6 @@
     global.I18N.apply();
   }
 
-  const VERSION = '4.7';
+  const VERSION = '4.8';
   global.EDP = { t, esc, today, uid, toast, safeSave, load, compressPhoto, readPhotos, ensureJpeg, jpegSync, imageData, pdfHeader, pdfFooter, deliver, download, safeName, initShell, showInstallHelp, photoPicker, bindPicker, checkForUpdate, VERSION };
 })(window);

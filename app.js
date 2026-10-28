@@ -192,7 +192,7 @@
   /* Home: who is signed in + own VCA progress */
   async function renderUserCard() {
     const card = $('#userCard'); if (!me) return;
-    const y = new Date().getFullYear(), target = EDPAuth.CONFIG.target;
+    const y = new Date().getFullYear(), target = me.vca_target != null ? me.vca_target : EDPAuth.CONFIG.target;
     let n = null;
     try {
       const [rows, man] = await Promise.all([
@@ -201,7 +201,7 @@
       ]);
       n = rows.length + ((man[0] || {}).count || 0); try { localStorage.setItem('edp-vca-count', JSON.stringify({ y, n })); } catch (e) {}
     } catch (e) { try { const c = JSON.parse(localStorage.getItem('edp-vca-count')); if (c && c.y === y) n = c.n; } catch (x) {} }
-    const pend = EDPAuth.pending(), total = (n || 0) + pend, pct = Math.min(100, Math.round(total / target * 100));
+    const pend = EDPAuth.pending(), total = (n || 0) + pend, pct = target ? Math.min(100, Math.round(total / target * 100)) : 100;
     card.innerHTML = `<div class="user-row"><span>${esc(t('signedInAs', { n: me.full_name || me.email }))}</span><button type="button" class="secondary compact" id="signOutBtn">${esc(t('signOut'))}</button></div>
       <div class="vca"><div class="vca-head"><strong>${esc(t('myVca', { y }))}</strong><span>${esc(t('vcaOf', { n: n == null ? '…' : total, t: target }))}</span></div>
       <div class="bar"><i style="width:${pct}%"></i></div>

@@ -1,9 +1,9 @@
 {
-  "version": "4.7",
-  "date": "2026-10-27",
+  "version": "4.8",
+  "date": "2026-10-28",
   "notes": {
-    "nl": ["Foto’s: kies “Foto nemen” (camera) of “Uit galerij”"],
-    "fr": ["Photos : choisissez « Prendre une photo » (appareil) ou « Depuis la galerie »"],
-    "en": ["Photos: choose “Take photo” (camera) or “From gallery”"]
+    "nl": ["Persoonlijk VCA-doel per jaar (bv. 4 voor de VCA-leidinggevende)", "VCA-rapport als PDF met grafieken en EDP-logo"],
+    "fr": ["Objectif VCA personnel par an (p. ex. 4 pour le responsable VCA)", "Rapport VCA en PDF avec graphiques et logo EDP"],
+    "en": ["Personal VCA target per year (e.g. 4 for the VCA supervisor)", "VCA report as PDF with charts and EDP logo"]
   }
 }

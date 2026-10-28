@@ -73,7 +73,7 @@
     if (cached && !force && !navigator.onLine) return cached;
     const s = await session(); if (!s) return null;
     try {
-      const rows = await call('/rest/v1/profiles?select=id,email,full_name,role&id=eq.' + s.user.id, { token: s.access_token });
+      const rows = await call('/rest/v1/profiles?select=id,email,full_name,role,vca_target&id=eq.' + s.user.id, { token: s.access_token });
       if (rows && rows[0]) { write(PKEY, rows[0]); return rows[0]; }
     } catch (e) {}
     return cached || { id: s.user.id, email: s.user.email, full_name: (s.user.user_metadata || {}).full_name || '', role: 'worker' };
